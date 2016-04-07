@@ -14,20 +14,48 @@ XLORE网站系统旨在对外显示我们的数据数量与语义关系，并向
 截止到目前，XLORE网站提供三类知识展示与两种知识查询方式。
 
 \subsection{XLore知识展示}
-图xx为XLORE网站首页。截止到2016年3月，我们的跨语言知识库中包含有xxx个概念、xxx个实例、xxx个属性。首页以表格的形式提供了顶层及其下两层的概念层及其统计数据，点击左边“＋”按钮可获得子概念样例。除此之外，首页列出了一些实例例子，点击可直接查看相应实例页面。
+图\ref{fig:xlore-home}为XLORE网站首页。截止到2016年3月，我们的跨语言知识库中包含有xxx个概念、xxx个实例、xxx个属性。首页以表格的形式提供了顶层及其下两层的概念层及其统计数据，点击左边“＋”按钮可获得子概念样例。除此之外，首页列出了一些实例例子，点击可直接查看相应实例页面。
+
+\begin{figure}[H] 
+  \centering
+  \includegraphics[width=0.8\columnwidth]{xlore-home}
+  \caption{XLore网页系统首页}
+  \label{fig:xlore-home}
+\end{figure}
 
 作为双语知识库，XLORE提供了语言切换功能，同时满足中文用户与外文用户的用户体验。
 
 知识分为三种，分别为概念、属性、实例。概念页面以绿色为主色调，显示了概念中英文标签、父概念、子概念、相关实例等信息。属性页面使用紫色色调，展示了中英文标签、属性类型（Datetype与Objecttype）、相关实例、xx与xx等。
 
-实例页面色调为蓝色，展示了中英文标签、实例图像、所属概念、摘要、信息框（包括中英文信息），URL多种信息。三种页面中，涉及到的双语内容，我们以“中文［英文］”的格式展示每条信息，如果网站语言为英文，则将英文展示在前，格式变为英文［中文］。当涉及到四个百科内容且无法融合，我们利用网页标签分栏的形式分别展示不同百科信息，如图xx。
+实例页面色调为蓝色，展示了中英文标签、实例图像、所属概念、摘要、信息框（包括中英文信息），URL多种信息。三种页面中，涉及到的双语内容，我们以“中文［英文］”的格式展示每条信息，如果网站语言为英文，则将英文展示在前，格式变为英文［中文］。当涉及到四个百科内容且无法融合，我们利用网页标签分栏的形式分别展示不同百科信息，如图\ref{fig:xlore-page}。
+
+\begin{figure}[H] 
+  \centering
+  \includegraphics[width=1\columnwidth]{xlore-page}
+  \caption{XLore实例、概念、属性页面展示}
+  \label{fig:xlore-page}
+\end{figure}
 
 \subsection{XLore知识查询}
 XLore提供搜索框文本查询与SPARQL语句查询。
 
-搜索框在每个页面上都有，输入要查询的中文或英文字符串，点击“搜索”或按Enter键，即获得模糊查询结果。用户可根据需求选择搜索概念还是实例，或者属性，默认情况下，我们会同时返回三类搜素结果，用户可通过切换标签查看。图xx为搜索结果页面展示。
+搜索框在每个页面上都有，输入要查询的中文或英文字符串，点击“搜索”或按Enter键，即获得模糊查询结果。用户可根据需求选择搜索概念还是实例，或者属性，默认情况下，我们会同时返回三类搜素结果，用户可通过切换标签查看。图\ref{fig:xlore-search-engine}为搜索结果页面展示。
 
-另一方面，对于专业人士，我们提供SPARQL查询页面，如图xx所示，输入正确的sparql语句，返回结果中可看到我们对知识库schema的定义。另外，为了防止sql注入造成的攻击与数据库崩溃，我们采取了xxx的安全措施。
+\begin{figure}[H] 
+  \centering
+  \includegraphics[width=0.9\columnwidth]{xlore-search-engine}
+  \caption{XLore文本搜索框与搜索结果展示}
+  \label{fig:xlore-search-engine}
+\end{figure}
+
+另一方面，对于专业人士，我们提供SPARQL查询页面，如图\ref{fig:xlore-sparql-endpoint}所示，输入正确的sparql语句，返回结果中可看到我们对知识库schema的定义。另外，为了防止sql注入造成的攻击与数据库崩溃，我们采取了xxx的安全措施。
+
+\begin{figure}[H] 
+  \centering
+  \includegraphics[width=0.9\columnwidth]{xlore-sparql-endpoint}
+  \caption{XLore SPARQL 搜索框与搜索结果展示}
+  \label{fig:xlore-sparql-endpoint}
+\end{figure}
 
 \subsection{XLore系统构建}
 图xx为XLORE系统架构图。
