@@ -1,433 +1,201 @@
-\chapter{基于百科模板的跨语言属性对齐}
-\label{cha:property-matching}
+\chapter{基于维基百科的概念属性生成}
+\label{cha:concept-property}
 
 \section{本章引论}
-本章从抽取更多跨语言知识，融合异构百科的角度出发，将工作定位于寻找百度百科与英文维基百科的中英文属性对齐关系。这是一个跨语言、跨异构百科的任务，就我们所知，当前还没有自动抽取百度百科属性信息，并与维基百科知识对齐的工作。
 
-我们的工作面临跨语言与跨异构百科两项挑战，对于前者，因为维基百科与百度百科相互独立，在词条、分类乃至信息框属性方面，并没有这两个百科现成的跨语言链接，如果能增加两者的关联信息，跨语言对齐的研究将会更加得心应手。好在维基百科有多语言特性，我们可以通过现有的中英文维基中已有的人工编辑的跨语言信息作为桥梁，连接英文维基与百度百科。
+本体构建中，Taxonomy作为骨架，占有重要地位。Taxonomy包含本体的概念与属性，属性为概念下一类实例的共有特性。
+
+为了获取通用领域下概念与属性的关系，本章中，我们对维基百科进行了详细地观察与解析，获得了维基中模板与属性的规则。
+
+维基百科鼓励编辑者使用模板对词条以及信息框进行组织与编辑。模板是百科针对不同主题的词条内容所列出的标准结构框架，类似于长期积累形成的标准写作规范。模板使词条的结构变得有规律可循，也可以有效避免关键信息的缺失。信息框的编辑也可模板化，信息框模板包含了描述一类实例的常用属性。图\ref{fig:template-infobox-film}为\textit{Template:电影信息框(Template:Infobox Film)}\footnote{https://zh.wikipedia.org/wiki/Template:电影信息框}，其中含有电影的诸多属性，如\textit{演员，导演，时长}等。模板在一定程度上描述了一个领域的信息，充分利用其中信息，对概念-属性关系的研究有很大意义。
+
+本文主要对信息框属性进行研究，后文中提到的模板，同一指代{\heiti 信息框模板}。
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\columnwidth]{template-infobox-film}
+  \caption{电影信息框模板}
+  \label{fig:template-infobox-film}
+\end{figure}
+
+基于对模板设计的思考，我们提出概念属性：即概念下有特定的属性集合对实例进行描述，属性的定义依赖于概念，不同概念下的属性意义可能不一样。以领域信息区分属性，有助于避免属性歧义问题。同时，考虑到维基信息框模板规范着一个概念下对实例的描述，我们可以用{\heiti 属性@模板}定义一个属性。
+
+因为百科数据杂乱，概念属性生成的工作繁琐但至关重要，结果的数量与质量，在很大程度上影响着其他属性研究的准确率，过多杂质的引入会增加相关工作的难度。
+
+本章工作充分利用维基百科的结构化信息，从中英文数据文件中，提取概念属性，其结果覆盖了90\%以上的维基词条，为今后对信息框属性的进一步分析打下了良好的基础。
+
+\section{维基百科信息框模板与属性分析}
+\label{sec:template-analysis}
+
+维基百科自2001年创立，经过15年左右的发展，不仅储备了海量数据，在编辑规则上也越发规范。但因为词条繁杂、参与人数众多，还是无法保证数据统一，质量差强人意，这使生成概念属性的工作困难重重。
+
+具体来说，维基所提供的数据文件\footnote{https://dumps.wikimedia.org}中，词条信息框的内容是以{\heiti 模板标签}来组织的，而模板标签与真正展示在网页上的{\heiti 显示标签}不同。模板标签与显示标签的关系在对应语言的信息框模板词条下有定义。图\ref{fig:film-tl-rl}，电影\textit{疯狂动物城}的配乐为\textit{迈克尔·吉亚奇诺}，这条信息在词条中的数据文件中是\textit{music=[[麥可·吉亞奇諾]]}，而在网页中的显示是\textit{配乐作曲 \ 迈克尔·吉亚奇诺}，其中，\textit{music}为模板标签，\textit{配乐作品}为显示标签，而两种标签的对应关系，在词条\textit{Template:电影信息框}中有所说明(见图\ref{fig:template-infobox-film})。维基百科的这种设计，使模板属性在不同语言上有了标准规范。对于任意一个语言，在设计自己的电影信息框模板时，只需根据模板标签，给出对应的显示标签即可，对多语言百科来说，不失为一种好方法。但是间接获得显示标签，也对模板的获取增加了难度，而人为设计的不规范性，又雪上加霜。
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\columnwidth]{film-tl-rl}
+  \caption{电影《疯狂动物城》模板标签与显示标签对比}
+  \label{fig:film-tl-rl}
+\end{figure}
+
+而真实的模板是怎么定义的呢？模板在维基百科中也设计成一个词条，在维基article数据文件中，含有对模板词条的具体定义。模板词条标签以\textit{Template:}开头，大部分的信息框模板标签则以\textit{Template:Infobox}开头，但也有例外，在中文维基中，类似\textit{Template:电影信息框}等具有语言本地化特色的标签有很多。在之后的工作中，我们统计出以\textit{Template:Infobox}标识的模板占所有英文信息框模板的91\%，中文的63.5\%。由此可见，单纯通过词条标签来筛选出信息框模板并不是一个良策。
+
+通过对模板内容进行总结，我们发现信息框模板的源代码中都含有\textit{infobox}字样，该infobox所涵盖的区域中，包含模板属性定义，可以认为带有infobox信息的Template为信息框模板。
+
+尽管区分出信息框模板，模板中内容格式却不尽相同。根据版式特点，我们将信息框模板归为三类，分别为键值对模板、表格模板与继承模板，图\ref{fig:template-examples}给出三种模板示例，我们将在\ref{sec:property-extraction}中给出详细介绍。
+
+\begin{figure}[h]
+  \caption{模板类型举例}
+  \label{fig:template-examples}
+
+  \begin{subfigure}{3cm}
+    \includegraphics[height=3cm]{template-keyvalue}
+    \caption{键值对模板示例}
+  \end{subfigure}%
+  \hspace{4em}%
+
+  \begin{subfigure}{3cm}
+    \includegraphics[height=3cm]{template-table}
+    \caption{表格模板示例}
+  \end{subfigure}%
+  \hspace{4em}%
+
+  \begin{subfigure}{3cm}
+    \includegraphics[height=3cm]{template-inherit}
+    \caption{继承模板示例}
+  \end{subfigure}%
+\end{figure}
+
+除了以上三类，数据文件中还出现了{\heiti 重定向模板}，内容如图\ref{fig:template-redirect}。该类模板的出现，是因为维基百科经过多次整理与更新，会将相似模板合并，或重新定义模板名称，被删除的模板会重定向到新模板上。2016年2月的中文维基上，\textit{Template:Infobox Film}与\textit{Template:Infobox film}都重定向到\textit{Template: 电影信息框}。
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\columnwidth]{template-redirect}
+  \caption{重定向模板内容展示}
+  \label{fig:template-redirect}
+\end{figure}
 
 \section{问题描述}
-本章的工作致力于解决中英文异构百科的跨语言信息框属性对齐问题。图\ref{}为电影《冰雪奇缘》在维基百科与百度百科中的信息框对比图，小图从1到3分别为中文维基、英文维基、百度百科中的信息框。本章任务则是将指代同一个实体的中英文词条$a_e,a_z$中两个信息框中描述同一实体特性的属性标签对齐，比如“Starring”对“主演”，“Directed by”对“导演”。
 
-为解决这个问题，我们引入{\heiti 领域模板}的概念。我们定义领域模板为一个特定属性领域下实体特征的集合，即属性集合。比如对电影领域来说，其模板包含“主演”、“导演”、“编剧”、“时长”等电影常用或特有的特征信息。鉴于属性标签带有歧义，比如对于属性“”来说，其在xx领域是xx的意思，在xx领域又是xx的意思。可以认为，属性在特定领域下的意思是唯一的。因此本文将对属性的分析限制在领域范围内，属性的同义词查找、跨语言链接等，都在同一领域里进行。为此，首先需要确定一个领域$D$，并生成该领域属性集合（模板）$P(D)={p_1,...p_n}$。则本章问题可定义为：
+我们认为，一个指定的概念$c_i \in C$所代表的领域下，会有一个属性集合$P(c_i)=\{p_{i,j}|j=1,2,...,n\}$表征$c_i$中的所有实例$I(c_i)$的特性。我们定义概念属性$p_{c_i}= <c_i, label, I, V>$，表示其带有概念$c_i$的领域信息，只描述$i_{c_i} \in I(c_i)$。$label$表示属性标签，即使$p_{c_i}.label == p_{c_j}.label$，$p_{c_i} \neq p_{c_j}$。$I$代表$p_{c_i}$在$c_i$下描述的实例集合，$V$代表$p_{c_i}$的描述$I$的所有值集合。
 
-给定对应的中英文领域$D_E \leftrightarrow D_Z$，找到其中的跨语言对齐属性对$p_i^e \leftrightarrow p_j^z$。
+本章的工作是从维基百科中生成概念属性。给定一个维基百科$W$，可以得到模板$T$，模板存储描述一类实例的属性集合，对于模板$t_i$，我们有$P(t_i)=\{p_{i,j}|j=1,2,...,n\}$。可以认为，模板代表着一类概念，则有$T \approx C$。
 
-\section{异构百科的模板与属性分析}
-\label{sec:template-property-analysis}
+鉴于\ref{sec:template-analysis}中对模板与属性的分析，基于维基的概念属性，在定义上需要进行一些改动：
+\begin{itemize}
+\item 维基百科在数据文件中使用的属性标签，与现实在页面的不一致(图\ref{fig:film-tl-rl})。我们将数据文件中使用的标签定义为模板标签(template label)，用$tl$表示，展示在页面上的称为显示标签(render label)，用$rl$表示。则有$p_{c_i}.label = <tl, rl>$。
+\item 维基百科的模板可能有相近或重复，此时所代表的概念是存在包含关系的。因此严格来说，有$c = \{t_i|i=1,2...n\}$。
+\end{itemize}
 
-另一个挑战则是来自于维基百科与百度百科的异构性
+具体到维基百科，本章工作抽象为：给定一个维基百科$W = <T>$，生成概念集合$C$，其中$c = \{t_i|i=1,2...n\}, c \in C, t_i \in T$，以及概念属性集合$\Rho = \{P(c_i)| i = 1,2,...,n\}$，其中对于$p_{c_i} \in P_{c_i}$，有$p_{c_i} = <c_i, tl, rl>$。
 
-\subsection{词条数量不平衡}
-
-维基百科是目前全球最大的百科数据库，目前支持228个语言，被世界各地的编辑者编写并完善词条。因语言使用者的差异、维基在各国的受欢迎程度等多种原因，英文维基词条与信息框数量远超其他语言，信息量很不对称。仅拿中英文来说，如图xx所示，截止到2016年2月，中文维基词条约为xxx，英文维基词条约为xxx，是中文维基的xx倍。
-
-再来看百度百科，百度百科作为目前中国最大的开放式网络百科全书，收录了许多特色词条，因为参与编辑的人数多，编辑方式相对自由等原因，信息也更为全面。截止到2016年1月已收录词条超过1,313万条，远超过维基百科的中文词条数量。
-
-不同百科规模的不一致体现出xxxx
-
-\subsection{信息框数量差异大}
-
-信息框是一个词条的脸面，它包含了该词条的基本的、重要的信息，读者通过阅读信息框，就可以了解关于词条大部分重要内容。信息框一般以属性－属性值的键值对形式排列在表格中。图xx为词条“xxx”在中英文维基百科中的信息框与百度百科中的“名片”。三个百科中的信息各有异同，如果能融合，对知识的补全有很大贡献。
-
-不过并非所有的词条都有名片。有些新编辑词条，可能来不及创建信息框；有些内容较短的词条，也不需要特别使用信息框汇总重要信息。图xx展示了各百科中拥有信息框的词条的数量，如果我们充分利用三个百科之间的关系，比如通过百度百科的信息框补全中文维基信息框、利用中文维基与英文维基的对齐关系找到英文维基与百度百科的对齐关系等，就可以实现中英文知识的进一步融合。
-
-\subsection{模板差异}
-
-各个百科鼓励编辑者使用模板对词条以及信息框进行组织与编辑。模板是百科针对不同主题的词条内容所列出的标准结构框架，类似于长期积累形成的标准写作规范。模板使词条的结构变得有规律可循，也可以有效避免关键信息的缺失。信息框的编辑也可模板化，比如百度百科中，人物使用“人物通用模板”，维基百科中，电影使用“Template:电影信息框”。与此同时，用户在模板信息项之外，可自行添加自定义属性，丰富信息框内容，使其个性化。
-
-利用模板信息，我们可以获得丰富的属性集合以及属性与领域的对照关系。理想情况下，只要能找到跨语言下的异构百科中模板的对应关系，我们就能找到相关的属性的对齐关系，达到跨语言、跨领域属性对齐的目标。但是实际上，这个过程存在诸多阻碍：
-
-1.  百度百科的数据来源于网页，模板不公开。百度百科数据用于商业用途，没有像维基百科一样公开数据，因此百度百科数据的获取多来源于网络爬虫。虽然网页涵盖了词条的几乎所有内容，但并不包含编辑信息，比如模板的使用。因此我们只能获得百度百科的属性集合，并依赖进一步的研究方法，猜测模板内容。
-
-2.  维基百科虽然对外提供模板定义与信息框信息，但数据却差强人意。具体来说，维基所提供的数据文件中，词条信息框的内容是以模板标签来组织的，而模板标签与真正展示在网页上的显示标签不同。模板标签与显示标签的关系在对应语言的信息框模板词条下有定义。举例来说，电影“xx”的导演为exxx，这条信息在“”词条中的数据文件中是“director =xxx”，而在网页中的显示是“导演：”，其中，director为模板标签，导演为显示标签，而两种标签的对应关系，在词条“Template：电影信息框”中有所说明。维基百科的这种设计，使模板属性在不同语言上有了标准规范。对于任意一个语言，在设计自己的电影信息框模板时，只需根据模板标签，给出对应的显示标签即可，对多语言百科来说，不失为一种好方法。但是间接获得显示标签，也对模板的获取增加了难度，而人为设计的不规范性，又雪上加霜。
-
-3.  异构百科定义的schema不同，给对齐增加了难度。姑且不说中英文差异，单是中文维基与百度百科，在对统一领域的词条的描述上，命名规范与侧重点都不尽相同。以完成度较高的电影领域模板为例，图xx显示了电影“xxx”的信息框对比，他们分别使用了中文维基的“Template：电影信息框”与百度百科的电影模板。可以看到，在对“出品或制作影片的公司”的属性表示上，中文维基使用“制片商”，百度百科使用“出品公司”作为该属性的标签。可见属性的多义性。另一方面中文维基常有“旁白”、“配乐”等百度百科不使用的属性，百度百科常有“imdb编码”等维基模板中没有的属性，可见模板的缺失性。若想尽可能保留属性集合的完整度，保证准确度，我们需要处理属性多义与模板缺失问题。
-
-模板的差异，无论是对前期的属性抽取，还是对之后的属性对齐工作，都带来了更多的挑战，但这也表明异构百科下属性的使用，确实有值得探究之处。我们可以通过寻找同一种属性在异构百科下的不同表达方式，寻找相似属性名称；融合多个百科的属性集合，获得领域下更全面的属性集合，制成通用模板。
-
-总的来说，属性抽取与属性对齐的最大挑战来源于数据的凌乱、不规整，第xxx章会对数据进行描述，并详尽的介绍数据抽取与清理的方法与过程。
-
-\section{基于百科模板的跨语言属性对齐}
-\label{sec:property-matching}
-
-本章致力于解决领域属性模板生成以及领域（模板）下跨语言属性的对齐，通过对数据的了解，我们意识到，解决这两个问题的过程中，还会遇到合并同义属性等诸多问题。
-
-本任务获得的领域下的属性模板，可以避免人工构建模板，有助于增加信息框的有意信息，查漏补缺，另一方面，获得属性同义表达方式，可以为融合其他百科信息做铺垫。属性模板的构成、属性的分布、属性的命名，在一定程度上都可以对用户行为分析、文本分析做贡献。比如一个实体的关键信息都有什么、用户一般关注什么重点信息、人们多属性的常用称呼都有什么等等。一旦拥有属性模板，我们可以用自动化的方法，从文本中抽取相应的信息，自动构建词条信息框。［引用］［］［］中都在已知属性集合的基础上，对缺失属性进行填充。
-
-图xx为整个跨语言属性对齐的框架图，根据之前所提出的问题，主要分为属性抽取、跨语言对齐种子集合生成、百度百科领域模板生成、同语言相似属性合并、跨语言属性对齐五大模块。
-
-{\heiti 模板与属性抽取：}因为百科数据杂乱，数据抽取的工作繁琐但至关重要，这部分结果的好坏，在很大程度上影响着后面几个步骤的准确率，抽取数量越多有利于增加初始跨语言集合的种子，过多杂质的引入会增加之后工作的难度，降低准确率。
-
-我们发现维基百科在数据文件中使用的属性标签，与现实在页面的不一致。以图\ref{}为例，左图为dump。。。 我们将数据文件中使用的标签定义为模板标签(template label)，用$tl$表示，展示在页面上的称为显示标签(render label)，用$rl$表示。同时我们发现，信息框模板$T$中，定义了$tl(T)$与$rl(T)$的对应关系。我们对维基百科的模板规则进行了细致的观察与总结，利用规则尽可能多地获得维基百科的模板与属性。
-
-百度百科的数据从网页上获得，没有模板与跨语言信息，抽取较为简单，本文不做赘述。
-
-基于对百科数据的观察，我们将属性定义为$p={t,label}$，即属性带有领域信息。其中维基百科中，$label={tl, rl}$，百度百科中没有模板标签，可认为$label=rl$。
-
-在信息框中，
-
-
-{\heiti 跨语言种子集合：}维基百科与百度百科这两个异构百科没有直接的关联关系，但我们可以以中文维基百科为桥梁，并利用维基的跨语言特性，找到百度百科与中英文维基百科的联系。如图xx所示，信息框属性在维基百科中，不像分类与词条一样含有显性的语言链接，不能直接获取，但我们依然可以通过信息框模板与词条链接等现有关系，抽取出正确的属性跨语言对齐关系。另一方面，通过分析同语言百科，获得对齐的中文属性集合。两两融合后，我们可以获得英文维基－中文维基－百度百科的属性对齐关系，形成跨语言种子集合。
-
-{\heiti 百度百科领域模板生成：}针对百度百科没有信息框模板这一问题，我们根据属性词频与共现率，提出领域模板生成模型，旨在模拟出与给出维基模板对应的领域与领域属性集合，从而形成领域模板。领域属性集合，可作为今后编写信息框的参照，同时可看作属性对齐的候选集，大大减小了计算空间。
-
-{\heiti 相似属性合并：}针对属性的一义多词问题，即描述相同意义的属性，有不同的显示标签。我们从文本相似度、语义形似度等角度出发，计算获得特定属性的同义属性。同领域属性同义词的查找，可以增加知识库中sameAs关系，同时对提高跨语言对齐的召回率也有帮助。
-
-{\heiti 跨语言属性对齐：}我们训练一个二元分类器，判断给定的中英文属性对是否为对齐关系。其中特征主要分为文本特征、结构特征等。
-
-\subsection{属性抽取}
+\section{概念属性生成}
 \label{sec:property-extraction}
 
-显示标签的抽取
+我们对三类信息框模板分别进行抽取，收集模板标签与显示标签的关系。我们发现，一个属性的显示标签，可能根据模板标签有所变化。抽取过程中，所有模板标签与显示标签的关系都会保留下来，我们以$<T, tl, rl>$的格式保留一组属性记录。
 
-针对维基百科中页面上显示的信息框属性标签与dump 文件中存储的信息框属性标签不一致问题，我们利用维基百科的信息框模板，获得模板标签与显示标签的对应关系。
+{\heiti 键值对模板($T_{kv}$)(图\ref{fig:template-examples}a)：} 这种类型的模板，其显示标签与模板标签在infobox中以
 
-通过观察与实践，总结出信息框模板有以下特点：
-
-信息框模板的标题通常以\textit{Template:Infobox}开头，但也有例外，尤其在中文维基中，类似“Template:电影信息框”的本地化标题很多，想通过\textit{Template:Infobox}来区分并不容易。但信息框模板的源代码中含有“infobox”，该infobox包含模板属性定义，因此我们可以认为带有infobox信息的Template为信息框模板；根据模板格式的不同，我们将信息框模板分为以下三类，并在图\ref{}中给出示例：
-
-{\heiti 键值对模板：} 这种类型的模板，其显示标签与模板标签在infobox中以
-
-\begin{table}[ht]
-  \begin{minipage}{0.4\linewidth}
-    \centering
-    \caption*{}
-    \label{tab:key-value}
-      \framebox(150,50)[c]{ label=显示标签 data=模板标签 }
-  \end{minipage}%
-  \hfill%
-\end{table}
+\begin{figure*}[ht]
+\begin{center}
+\framebox[0.4\linewidth]{
+    \begin{minipage}[t]{0.25\linewidth}
+    \ label=显示标签\\
+    \ data=模板标签 
+    \end{minipage}
+}
+\end{center}
+\end{figure*}
 
 的格式存在。一个模板中，显示标签与模板标签的关系可能是一对一、一对多、多对多的，即一个属性根据不同的模板标签，可能会显示不同的标签在页面上。
 
-{\heiti 表格模板：}这种类型的模板以类似表格的形式对属性进行编排，抽取方法与键值对模板不同，根据表格行列思想，通过分析<td>等标签抽取。
+{\heiti 表格模板($T_{table}$)(图\ref{fig:template-examples}b)：}这种类型的模板以类似表格的形式对属性进行编排，抽取方法与键值对模板不同，根据表格行列思想，通过分析<td>等标签抽取。
 
-{\heiti 继承模板：}有半数左右的模板存在继承关系，即其模板标签的表示含义与父类模板相同，标签对应关系要结合父类模板来挖掘。继承模板可能继承自键值对模板、表格模板，甚至后文提到的重定向模板。
+{\heiti 继承模板($T_{inherit}$)(图\ref{fig:template-examples}c)：}有半数左右的模板存在继承关系，即其模板标签的表示含义与父类模板相同，标签对应关系要结合父类模板来挖掘。继承模板可能继承自键值对模板、表格模板，甚至重定向模板。
 
-除了以上三类，我们还定义了{\heiti 重定向模板}，该类模板的出现，是因为维基百科经过多次整理与更新，会将相似模板合并，或重新定义模板名称，被删除的模板会重定向到新模板上。2016年2月的中文维基上，“Template:Infobox Film”与“Template:Infobox film”都重定向到“Template: 电影信息框”。
+{\heiti 重定向模板($T_{redirect}$)(图\ref{fig:template-redirect})：}对于分析实例对模板的应用情况至关重要，编辑者可能在编写信息框时用的旧版模板标签，或者不注意大小写。\ref{fig:template-redirect-examples}给出不同词条对同一模板的不同编辑方式。如果不考虑重定向模板标签，在前三类的基础上直接匹配，会大大影响已抽取模板对词条的覆盖率。因此重定向模板虽然没有实质内容，也不能弃之不理。
 
-基于以上四类信息框模板，我们对2016.03版本的英文维基与2016.02版本的中文维基分别抽取，得到各类型信息框模板数量如表\ref{tab:infobox-template}所示
-
-\begin{table}[htb]
+\begin{figure}[H]
   \centering
-  \caption 各类型信息框模板数量
-  \label{tab:infobox-template}
-  \begin{minipage}[t]{1\textwidth} % 如果想在表格中使用脚注，minipage是个不错的办法
-    \begin{tabularx}{\linewidth}{X|X|X|X|X|}
-      {\heiti 维基百科} & {\heiti \#键值对模板} &  {\heiti \#表格模板} & {\heiti \#继承模板} & {\heiti \#重定向模板} \\\midrule[1pt]
-      英文维基 & 1 & 1 & 1 & 1 \\
-      中文维基 & 1 & 1 & 1 & 1 \\
-      \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
-\end{table}
-
-抽取出的显示标签结果如表\ref{tab:render-label}所示，其中模板覆盖率为抽取出的模板数量与所有词条使用的全部模板数量的占比，模板-属性覆盖率为所有抽取出的模板-属性对所有词条的所有属性数量的占比，词条覆盖率为能用抽取模板分析的词条的百分比。
-
-\begin{table}[htb]
-  \centering
-  \caption 显示标签抽取结果
-  \label{tab:render-label}
-  \begin{minipage}[t]{1\textwidth} % 如果想在表格中使用脚注，minipage是个不错的办法
-    \begin{tabularx}{\linewidth}{X|X|X|X|X|X|}
-      {\heiti 维基百科} & {\heiti \#含有属性的模板} & {\heiti 模板覆盖率} & {\heiti \#模板-属性} & {\heiti 模板-属性覆盖率}  & {\heiti 词条覆盖率} \\\midrule[1pt]
-      英文维基 & 1 & 1 & 1 & 1 & 1 \\
-      中文维基 & 1 & 1 & 1 & 1 & 1 \\
-      \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
-\end{table}
-
-我们还依靠网页解析规则，对2014.12版本的百度百科进行信息框解析。抽取结果在表\ref{tab}中展示。
-
-\subsection{领域模板生成}
-\label{sec:domain-template}
-根据领域模板的定义，我们提出如下假设：给定一个领域，在其中使用频率高，或在其他领域极少出现的属性，即为该领域的属性。该思想与TF-IDF(term frequency–inverse document frequency)的思想相近，TF-IDF表征一个词在一类文档中的重要程度，可以用来区分不相关文档。属性在领域的IF-IDF值，可以表示该属性对领域的相关程度。
-
-如何定义一个领域？因为模板规范着一类文档的写作，我们认为一个模板关联着一个领域，即$T \approx D$。根据\ref{}的统计，当前抽取的信息框模板覆盖了90\%的维基文档，可以认为涵盖了百科中的大部分领域。由于英文维基的模板已知，当前的任务则为：给定领域$D_E$，抽象出与其对应的中文领域$D_Z$，及其属性集合$P(D_Z)={p_1^z,...,p_n^z}$。其中，不同于$D_E$有明确的模板定义，百度百科中的$D_Z$是一个抽象存在，可以认为$P(D_Z)$就代表着$D_Z$的特征，$P(D_Z)$组成领域$D_Z$的模板。
-
-哪些属性可以涵盖在$D_Z$内？我们首先获取$P(D_Z)$的候选集。根据百科的结构，可以通过直接关联找到关系密切的属性，并利用间接关系扩展属性候选：
-
-{\heiti 直接关联} $D_E$中的词条$A(D_E)$对应的跨语言词条集合$A_Z$使用的属性，认为是与$D_E$直接关联的属性，定义为$p_direct$；
-
-{\heiti 间接关联} $D_E$中的词条$A(D_E)$涉及的分类$C(D_E)$对应的跨语言分类集合$C_Z$下，对应词条$A_Z'$使用的属性，认为是与$D_E$间接关联的属性，定义为$p_indirect$
-
-则有：
-\begin{align}
-\label{equ:tf}
-tf_{i,j}=\frac{n_{i,j}}{\sum_{k}{n_{k,j}}} 
-\end{align}
-\begin{align}
-\label{equ:idf}
-idf_{i}=1+log\frac{\left | D \right |}{\left | j:t_i  \epsilon d_j \right |} 
-\end{align}
-\begin{align}
-\label{equ:tfidf}
-ifidf_{i,j}=tf_{i,j}\times idf_{i}
-\end{align}
-
-\ref{equ:tf}中$n_{i,j}$是属性在领域$d_{j}$中的使用频次，分母则是在领域$d_{j}$中全部属性的使用次数之和。对属性频次的计算，因为直接关联属性比间接关联属性更重要，权值应更高，因此
-
-\begin{align}
-n_{i,j} = {\sum_{k}{x_{k,j}}}\\
-\end{align}
-
-\begin{align}
-x_{k,j} = 
-\left\{\begin{matrix}
-2 & p_i = p_{direct} \ in \ d_j\\
-1 & p_i = p_{indirect} \ in \ d_j\\
-0 & p_i \ not \ in \ d_j
-\end{matrix}\right.
-\end{align}
-
-\subsection{同语言对齐与相似属性合并}
-\label{sec:similar-property}
-
-{\heiti 中文维基与百度百科属性对齐}是在同语言环境下，找出中文属性对齐关系。为获取更多异构百科中的跨语言对齐关系做铺垫。为保证准确性，我们添加置信度衡量标准，具体来说：
-
-\begin{enumerate}[1)]
-\item {\heiti 基于属性名称：}   描述同一实体的两个百科词条中，如果信息框属性名称一致，认为是同一属性；
-\item {\heiti 基于相同属性值：} 描述同一实体的两个百科词条中，如果信息框属性名称有相同字符，且属性值相同，则认为是同一属性；
-\item {\heiti 基于相似属性值：} 描述同一实体的两个百科词条中，如果信息框属性属性值相似，且相似出现频率超过N次，则认为是同一属性。
-\end{enumerate}
-
-因为个人编写习惯，百科监管不严格等问题，属性可能有多种表达方式。我们在对齐结果中，发现中文维基一个属性可能对应多个百度属性标签，比如电影领域，“剪辑”有“剪辑”，“剪辑导演”，“剪接”等表示方法，验证了这一现象的普遍性。
-
-如果一个属性有多个表示方法，应该将其视为一个属性。我们我们将代表同样含义但不同标签的属性合并成一个超级属性$sp={p_1,...,p_n}$。百度百科的每个属性都由$sp$来表示，如果某属性没有歧义表达，则$sp={p}, \ {\#sp}=1$。
-
-本节中的同语言对齐方法较为严格，准确率较高，其一对多的情景抽象出的$sp$可以直接利用。因为对齐结果较少，我们对其进行了人工验证，准确率在。。。
-
-为寻找更多的相似属性，还可以进一步通过文本、值域、结构等纬度的相似度入手，对属性聚类。在理想情况下，一个簇表示一个超级属性。
-
-我们尝试从文本相似度、Word2Vec语义相似度，值相似度三个特征入手，对百度百科同一领域的属性进行聚类。以“电影(film)”，“公司(company)”, “歌曲(single)”三个领域的结果进行检查，并与对齐方法进行对比，见表\ref{tab:similar-property-compare}
-
-\begin{table}[htb]
-  \centering
-  \caption 方法对比结果
-  \label{tab:similar-property-compare}
-  \begin{minipage}[t]{1\textwidth} 
-    \begin{tabularx}{\linewidth}{lXXXX}
-    \toprule[1.5pt]
-      {\heiti 方法} & {\heiti 准确率} & {\heiti 召回率} & {\heiti 相似属性数量} & {\heiti 超级属性数量(${\#sp}>1$)} \\\midrule[1pt]
-      基于同语言对齐 & 1 & 1 & 1 & 1 \\
-      聚类方法       & 1 & 1 & 1 & 1 \\
-      \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
-\end{table}
-
-经过表\ref{tab:similar-property-compare}中对比可看出，基于相似度的聚类方法，虽然在数量上有明显增加，提高了召回率，但准确率却有所损失。超属性作为之后跨语言对齐的对象，其存在的瑕疵会造成错误累加，因此对其质量要求很高。基于此，我们使用同语言对齐的同时获得的相似属性结果，来保证之后工作的高质量。
-
-\subsection{跨语言属性种子集合生成}
-\label{sec:cross-lingual-seed}
-依赖维基百科跨语言特性，我们首先可以获得一批高质量的中英文属性对齐关系，以此为媒介，进一步寻找维基与百度百科的属性对齐关系。如图\ref{}所示。该过程可分为三个子步骤，即分别构建中英文维基百科、中文维基与百度百科、英文维基与百度百科的属性对齐关系。
-
-{\heiti 第一步 中英文维基百科跨语言属性对齐}在维基的语言链接，即现有跨语言模板与跨语言词条基础上实现。具体来说，分为三种情况，图\ref{fig:cross-lingual-seed}给出了较为直观的展示：
-
-\begin{figure}[h]
-  \centering%
-  \begin{subfigure}{3cm}
-    \includegraphics[height=3cm]{enwiki-zhwiki-property-crosslinks-1}
-    \caption{基于跨语言模板对齐}
-  \end{subfigure}%
-  \hspace{4em}%
-  \begin{subfigure}{0.5\textwidth}
-    \includegraphics[height=3cm]{enwiki-zhwiki-property-crosslinks-2}
-    \caption{基于跨语言实例对齐}
-  \end{subfigure}
-  \begin{subfigure}{0.5\textwidth}
-    \includegraphics[height=3cm]{enwiki-zhwiki-property-crosslinks-3}
-    \caption{基于属性值对齐}
-  \end{subfigure}
-  \caption{中英文维基属性跨语言抽取说明}
-  \label{fig:cross-lingual-seed}
+  \includegraphics[width=0.8\columnwidth]{template-redirect-examples}
+  \caption{重定向模板使用情况举例}
+  \label{fig:template-redirect-examples}
 \end{figure}
 
-\begin{enumerate}[1)]
-\item  {\heiti 基于跨语言模版对齐：}对于已对齐的跨语言信息框模版$<T_e, T_z>$，找出模板标签一致的中英文显示标签，构成跨语言属性对，即如果$p_e(T_e).tl_e == p_z(T_z).tl_z$，则$<p_e(T_e), p_z(T_z)>$是跨语言链接对；
-\item  {\heiti 基于跨语言实例对齐：}对于已对齐的词条$<a_e, a_z>$，抽取其信息框模版$<T_e'(a_e), T_z'(a_z)>$，找出其中模板标签一致的中英文显示标签，构成跨语言属性对，即如果$p_e(T_e').tl_e == p_z(T_z').tl_z$，则$<p_e(T_e'), p_z(T_z')>$是跨语言链接对；
-\item  {\heiti 基于属性值对齐：}对于已对齐的词条$<a_e, a_z>$，分析其信息框中的属性-属性值，如果两个中英文属性类型都为对象属性，且属性值指向同一个实体；这两个属性构成跨语言属性对，即如果$p_e(a_e).v and p_z(a_z).v are entities$ 且 $<p_e(a_e).v, p_z(a_z).v>$是跨语言对齐的关系，则$<p_e(a_e), p_z(a_z)>$是属性跨语言链接对。
-\end{enumerate}
+\subsection{结果统计}
 
-{\heiti 第三步 跨语言种子集合生成}，即英文维基与百度百科属性对齐结果，利用前两步的结果作为媒介，两两对齐，获得双语的对齐关系。
-
-\subsubsection{实验结果}
-在第一步中，我们从2016.02版的中文维基与2016.03版的英文维基中获取中英文。表\ref{tab:zhwiki-enwiki-cross-lingual}中统计了三种方法分别获得的跨语言属性链接数量，并举出例子。
+基于以上四类信息框模板，我们对2016.03版本的英文维基与2016.02版本的中文维基分别抽取，表\ref{tab:wiki-infobox-statistic}是对当前维基现状的统计分析。
 
 \begin{table}[htb]
   \centering
-  \caption 中英文维基属性跨语言对齐结果
-  \label{tab:zhwiki-enwiki-cross-lingual}
-  \begin{minipage}[t]{1\textwidth} 
-    \begin{tabularx}{\linewidth}{X|X|X|}
-      {\heiti 对齐方法} & {\heiti 数量} &  {\heiti 举例} \\\midrule[1pt]
-      基于属性名称   & 1 & 1  \\
-      基于相同属性值 & 1 & 1  \\
-      基于相似属性值 & 1 & 1  \\
-      总数           & 1 & -  \\
-      \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
-\end{table}
-
-第二步我们使用2014.12版本的百科数据与中文维基进行对齐。经历三步提取，最终结果在表\ref{tab:zhwiki-baidu-cross-lingual}中展示。
-
-\begin{table}[htb]
-  \centering
-  \caption 中文维基与百度百科属性对齐结果
-  \label{tab:zhwiki-baidu-cross-lingual}
-  \begin{minipage}[t]{1\textwidth} 
-    \begin{tabularx}{\linewidth}{X|X|X|}
-      {\heiti 对齐方法} & {\heiti 数量} &  {\heiti 举例} \\\midrule[1pt]
-      基于跨语言模板对齐 & 1 & 1  \\
-      基于跨语言实例对齐 & 1 & 1  \\
-      基于属性值对齐     & 1 & 1  \\
-      总数               & 1 & -  \\
-      \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
-\end{table}
-
-在最终的跨语言属性种子集合生成结果中，我们以{\heiti 模板:属性标签}表征一个属性，即属性带有领域信息。我们还发现，对于一个属性，可能有一义多词的现象出现。最终结果统计见表\ref{tab:cross-lingual-seed}。
-
-\begin{table}[htb]
-  \centering
-  \caption 跨语言属性初步对齐结果
-  \label{tab:cross-lingual-seed}
-  \begin{minipage}[t]{1\textwidth} 
-    \begin{tabularx}{\linewidth}{XXX|}
-      {\heiti 对齐数量} & {\heiti 英文模板数量} &  {\heiti 一对多属性数量} \\\midrule[1pt]
-      1 & 1 & 1  \\
-      \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
-\end{table}
-
-
-\subsection{跨语言属性对齐}
-\label{cross-lingual-property-matching}
-对齐是一对一匹配的精准工作，为了让结果可精确且可度量，我们将跨语言属性对齐设计成二分类任务，即“对齐”返回1，“非对齐”返回0，并采用逻辑斯谛回归模型进行训练与预测。
-
-\subsubsection{特征选择}
-特征选用三类特征：基于文本特征、基于语义特征、基于分布特征。
-
-{\heiti 基于文本特征} 我们对两部分文本进行计算，分别为属性标签和属性值。针对语言的差异，我们利用百度翻译API\footnote{http://fanyi.baidu.com/}，获得属性标签中译英、英译中两类翻译结果，与属性值英译中翻译结果。文本相似度多采用编辑距离(EditDistance)计算，编辑距离相似度被定义为:
-\begin{equation}
-edit\_distance\_sim(s_1, s_2) = \frac{edit\_distance(s_1, s_2))}{max(\left| s_1 \right |,\left | s_2 \right |))}
-\end{equation}
-
-标签相似度：对中英文属性的标签进行计算，转换成同语言后，分别进行中文相似度计算与英文相似度计算，取最大值作为特征值。
-\begin{equation}
-\label{}
-sim_{label}(sp_e, sp_z) = max(ed\_sim(label(p_e), translate(label(p_z)), ed\_sim(translate(label(p_e)), label(p_z))) 
-\end{equation}
-
-属性值相似度：属性值是衡量两个属性是否对齐的最直接指标，如果两个属性在同一篇词条下具有相同属性值，它们匹配的可能性就很大。根据属性值的内容，我们将其分为三类，分别为文章型、数字型、纯文本型，每一种类型，采用不同的相似度计算策略。
-
-文章型属性值：如果属性值表示一个实体，即其链接到一个词条，认为它是文章型属性。这类属性，对于其“相等”的定义为：如果两个实体是跨语言链接关系，即表征同一实体，则认为属性值相等:
-\begin{equation}
-Equal(a,a')=\left\{\begin{matrix}
-1 \ if <a,a'> in \ CL\\ 
-0 \ else
-\end{matrix}\right.
-\end{equation}
-
-文章型属性的相似度计算公式如\ref{equ:article_value_similarity}：
-
-\begin{equation}
-\label{equ:article_value_similarity}
-sim_{article\_v}(sp_e, sp_z) = \frac{\sum_{a_e\in A(sp_e), a_z \in A(sp_z)} Equal(a_e, a_z)}{min(\left| A(sp_e)\cap CL(A_E) \right|, \left|A(sp_z) \cap CL(A_Z) \right|)}
-\end{equation}
-$A(sp)\cap CL(A)$为含有跨语言链接的词条集合。
-
-数字型属性值：由数字构成的值，比如年龄、日期、电影票房等，被定义为数字型属性值。对于这类属性值，不能直接对比，也不适合用文本相似度计算方法。我们还面临异构百科带来的另一个问题：不同百科中，同一属性的属性值可能由不同形式表示，比如迈克尔·菲尔普斯(Michael Phelps)在英文维基中，身高(Height)为“6 feet 4 inches”，而在百度百科中则表示成193cm。考虑到以上特点，我们用皮尔逊积矩相关系数(Pearson product-moment correlation coefficient)计算数字型属性值的相似度，该系数衡量两个变量的线性相关程度。具体见公式\ref{equ:number_value_similarity}
-
-\begin{equation}
-\label{equ:number_value_similarity}
-sim_{number\_v}(sp_e, sp_z) = 
-\end{equation}
-
-文本型属性值：既不指向实体，又没有数字特征的属性值，被认为是文本型属性值。我们用编辑距离方法计算其相似度\ref{}:
-
-\begin{equation}
-\label{equ:literal_value_similarity}
-sim_{literal\_v}(sp_e, sp_z) =
-\end{equation}
-
-为了减小计算复杂度并提高准确度，属性值最好在精炼且可能性大的候选集中计算。因此我们将属性值相似度的计算粒度设定为单个文章，即只与对齐文章信息框内的属性值进行比对。属性值类型的判定。。。
-
-\begin{equation}
-\end{equation}
-
-{\heiti 基于语义特征}
-当前大部分跨领域的知识库都以在线百科为数据源而建立。百科内部本身就存在着一些语义关系，比如子分类和父分类间的\textit{subClassOf}关系、词条实体与分类之间的\textit{instanceOf}关系。语义信息常被用来抽取特征［老大的论文］，表示实例等在结构上的特点。我们利用百科里现有的语义关系，抽取出两个特征，分别为文章相似度与概念相似度。 
-
-文章相似度即计算使用两属性词条的交集，定义为：\ref{}，概念相似度即计算两属性领域的相似程度。
-
-%基于语义的特征表征的是两个
-{\heiti 基于分布特征}
-是基于假设：\textit{同一属性即使在不同百科中，被使用频率也相近。}我们称之为受欢迎(Popular)程度，该特征的定义为：
-\begin{equation}
-sim_{popular}(sp_e, sp_z) = 
-\end{equation}
-
-\subsubsection{实验结果}
-
-{\heiti 评测标准}
-作为标准的二分类模型，我们用准确率(Precision)，召回率(Recall)，与F1值(F1-Score)来评测跨语言属性对齐方法。
-
-\begin{align}
-Precision =
-\end{align}
-
-\begin{align}
-Recall = 
-\end{align}
-
-\begin{align}
-F1-Score = 
-\end{align}
-
-我们的训练与测试数据来自\ref{}中抽取的跨语言属性链接种子。取2000个为正例，随机组合取2000个负例，带入逻辑斯谛回归模型。最终结果显示在表\ref{tab:property-matching-result}
-
-\begin{table}[htb]
-  \centering
-  \caption 跨语言属性对齐方法评测结果
-  \label{tab:property-matching-result}
-  \begin{minipage}[t]{1\textwidth} 
-    \begin{tabularx}{\linewidth}{X|X|X|X|}
-      {\heiti 方法} & {\heiti 准确率} &  {\heiti 召回率} & {\heiti F1值}  \\ \midrule[1pt]
-      跨语言属性对齐 & 83\% & 50\% & 1  \\
-      \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
-\end{table}
-
-此外，对不同特征做出的贡献，我们也在表\ref{tab:feature-compare}中给出了对比：
-
-\begin{table}[htb]
-  \centering
-  \caption 特征组合对结果的影响
-  \label{tab:feature-compare}
+  \caption{中英文维基百科词条信息统计}
+  \label{tab:wiki-infobox-statistic}
   \begin{minipage}[t]{1\textwidth} 
     \begin{tabularx}{\linewidth}{lXXX}
-      {\heiti 特征组合} & {\heiti 准确率} &  {\heiti 召回率} & {\heiti F1值}  \\ \midrule[1pt]
-       & 83\% & 50\% & 1  \\
-       & 83\% & 50\% & 1  \\
-       & 83\% & 50\% & 1  \\
-       & 83\% & 50\% & 1  \\
+      {\heiti 维基百科} & {\heiti \#词条} &  {\heiti \#含有信息框词条} & {\heiti \#被使用模板} \\\midrule[1pt]
+      英文维基 & 5,138,426 & 2,344,305(45.6\%) & 4491 \\
+      中文维基 & 863,918   & 261,045(30.2\%)   & 2317  \\
       \bottomrule[1.5pt]
     \end{tabularx}
   \end{minipage}
 \end{table}
 
+得到各类型信息框模板数量如表\ref{tab:infobox-template}所示
+
+\begin{table}[htb]
+  \centering
+  \caption{各类型信息框模板数量}
+  \label{tab:infobox-template}
+  \begin{minipage}[t]{1\textwidth} 
+    \begin{tabularx}{\linewidth}{lXXXXX}
+      {\heiti 维基百科} & {\heiti \#$T_{kv}$} &  {\heiti \#$T_{table}$} & {\heiti \#$T_inherit$} & {\heiti \#$T_redirect$} & {\heiti 总数}\\\midrule[1pt]
+      英文维基 & 1910 & 1901 & 1897 & 4076 & 9784\\
+      中文维基 & 840  & 878  & 968  & 956  & 3642\\
+      \bottomrule[1.5pt]
+    \end{tabularx}
+  \end{minipage}
+\end{table}
+
+我们对各模板进行了分析，因为数据杂乱等原因，我们无法成果获取所有模板中的信息，而是以常用模板为优先，并以词条覆盖率90\%以上为目标结束属性生成任务。成功解析的属性信息如表\ref{tab:render-label}所示，其中不包括对重定向模板的解析。
+
+\begin{table}[htb]
+  \centering
+  \caption{概念属性信息生成结果}
+  \label{tab:render-label}
+  \begin{minipage}[t]{1\textwidth} 
+    \begin{tabularx}{\linewidth}{lXXXX}
+      {\heiti 维基百科} & {\heiti \#$T$} & {\heiti \#模板属性} & {\heiti 属性/模板}  &{\heiti 模板标签/属性} \\\midrule[1pt]
+      英文维基 & 3819 & 104741 & 27.45 & 1.27  \\
+      中文维基 & 1895 & 44797  & 23.64 & 1.34  \\
+      \bottomrule[1.5pt]
+    \end{tabularx}
+  \end{minipage}
+\end{table}
+
+我们在\ref{tab:coverage}中给出当前生成的概念属性对维基百科的覆盖程度。实际使用的模板名称与模板正式名称的匹配率较低，需要经过一系列转化，包括：大小写转换、去除多余空格、重定向模板转换等。
+模板覆盖率为抽取出的模板数量与所有词条使用的全部模板数量的占比，模板属性覆盖率为所有抽取出的模板属性对所有词条的所有属性数量的占比，词条覆盖率为能用抽取模板分析的词条的百分比，我们获取的概念属性可以处理90\%以上的维基词条的信息框。
+
+\begin{table}[htb]
+  \centering
+  \caption{结果覆盖率统计}
+  \label{tab:coverage}
+  \begin{minipage}[t]{1\textwidth} 
+    \begin{tabularx}{\linewidth}{lXXX}
+      {\heiti 维基百科} & {\heiti 模板覆盖率}  {\heiti 模板属性覆盖率}  & {\heiti 词条覆盖率} \\\midrule[1pt]
+      英文维基 & 87.6\% & 27\% & 96.7\%  \\
+      中文维基 & 77.8\% & 33\% & 90.3\%  \\
+      \bottomrule[1.5pt]
+    \end{tabularx}
+  \end{minipage}
+\end{table}
+
+%\section{概念合并}
+%
+%最后我们有xx个概念，共xx个属性
+%
 \section{本章小结}
-本章主要解决英文维基百科与百度百科的异构、跨语言属性对齐问题。因为通用领域百科数据的繁多与复杂性，属性存在多义多表达等问题。为了解决属性歧义问题，我们提出领域属性模板，模板是领域相关的所有属性集合，模板中的属性带有领域信息，同一领域下的属性没有歧义性。基于此，我们根据维基百科的模板构建领域范围，将跨语言属性对齐转换为领域内的对齐。
 
-为了尽可能找到更多属性对齐，我们提出跨语言属性对齐框架，该框架由：属性抽取、领域模板生成、同语言属性对齐与相似属性合并、跨语言对齐种子生成以及跨语言属性对齐五部分组成。属性抽取从维基百科和百度百科的词条信息框中获得属性与属性值、属性与词条关系等，并重点解决了维基百科显示标签的抽取问题；领域模板针对百度百科没有信息框模板信息的情况，以维基模板为指导生成对应领域百度百科下的属性集合；给出中文维基与百度百科的对齐规则，获得高准确率的异构百科下的属性对齐关系与属性多表达集合；跨语言对齐种子集合是将中文维基作为媒介，抽取出精准的英文维基与百度百科的中英文属性对齐关系，形成种子；最终我们基于文本、语义、分布三类特征，训练出跨语言属性对齐二分类模型，作为最终结果。
+本章主要从维基百科中生成概念属性。我们将维基模板相关的领域视为概念，其中的属性视为该概念下的属性，并用\textit{属性@模板}的方式定义一个属性，这种方法同时可以解决属性多义问题，即认为同一领域下的属性没有歧义性。
 
-本章因为数据需求，还对维基百科的模板和属性进行了细致的分析，有助于他人对于属性和模板有更深入的理解。
-
+为了获得尽可能多的概念属性，我们对维基百科模板和属性进行了细致的分析，将模板分为键值对模板、表格模板、继承模板与重定向模板，分别进行处理，将属性赋予模板标签与显示标签两种信息，这些工作，有助于他人对于属性和模板有更深入的理解。
 
