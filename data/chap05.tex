@@ -156,7 +156,7 @@ XLore知识库融合中英文维基百科、百度百科与互动百科的信息
     \centering
     \caption{XLore结果展示}
     \label{tab:xlore-result}
-    \begin{tabularx}{\linewidth}{lXXXX}
+    \begin{tabularx}{\linewidth}{lXXX}
         \multicolumn{1}{|c|}{} & \multicolumn{2}{c|}{概念}     & \multicolumn{2}{c|}{实例}                   & \multicolumn{2}{c|}{属性}    \\ \hline
 英文            & 639,020 & 96.26\%                & 3,879,121              & 38.79\%                & 15,380  & 27.24\%                \\ \hline
 中文            & 88,615  & 13.35\%                & 7,409,519              & 68.25\%                & 51,618  & 91.44\%                \\ \hline
@@ -177,7 +177,7 @@ XLore网站系统旨在对外显示我们的数据数量与语义关系，并向
 
 \begin{figure}[H] 
   \centering
-  \includegraphics[width=0.8\columnwidth]{}
+  \includegraphics[width=0.8\columnwidth]{xlore-architecture}
   \caption{XLore系统架构图}
   \label{fig:xlore-architecture}
 \end{figure}
@@ -186,7 +186,7 @@ XLore网站系统旨在对外显示我们的数据数量与语义关系，并向
 
 Virtuoso是由OpenLink软件公司开发的一个混合型数据库，它既支持传统的RDBMS数据，也支持RDF等其他图类型数据的存储与查询。其商业版本（Virtuoso Universal Server）可支持多CPU处理、多会话访问以及集群网络环境等。商业版Virtuoso是闭源的，但OpenLink公司提供一个名为OpenLink Virtuoso的开源版本［GitHub链接］，供使用者编译与尝试。
 
-为了提高搜索效率，我们为各个元素标签及其URI建立了索引，并使用Redis\footnote{http://redis.io/}充当缓存。为了给出更好的搜索体验，用模糊查询??代替完全匹配，返回更多相关搜索结果。
+为了提高搜索效率，我们使用Redis\footnote{http://redis.io/}充当缓存。为了给出更好的搜索体验，用为各个元素标签及其URI建立了索引，使用Lucence的模糊查询代替完全匹配，返回更多相关搜索结果。
 
 Web框架采用JSP＋Struts2.0搭建，运行在Tomcat7.0 Web服务器上。页面设计基于当前最受欢迎的Bootstrap前端框架。
 
