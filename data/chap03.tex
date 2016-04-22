@@ -13,7 +13,7 @@
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.8\columnwidth]{template-infobox-film}
+  \fbox{\includegraphics[width=0.8\columnwidth]{template-infobox-film}}
   \caption{电影信息框模板}
   \label{fig:template-infobox-film}
 \end{figure}
@@ -31,7 +31,7 @@
 
 具体来说，维基所提供的数据文件\footnote{https://dumps.wikimedia.org}中，词条信息框的内容是以{\heiti 模板标签}来组织的，而模板标签与真正展示在网页上的{\heiti 显示标签}不同。模板标签与显示标签的关系在对应语言的信息框模板词条下有定义。图\ref{fig:film-tl-rl}，电影\textit{疯狂动物城}的配乐为\textit{迈克尔·吉亚奇诺}，这条信息在词条中的数据文件中是\textit{music=[[麥可·吉亞奇諾]]}，而在网页中的显示是\textit{配乐作曲 \ 迈克尔·吉亚奇诺}，其中，\textit{music}为模板标签，\textit{配乐作品}为显示标签，而两种标签的对应关系，在词条\textit{Template:电影信息框}中有所说明(见图\ref{fig:template-infobox-film})。维基百科的这种设计，使模板属性在不同语言上有了标准规范。对于任意一个语言，在设计自己的电影信息框模板时，只需根据模板标签，给出对应的显示标签即可，对多语言百科来说，不失为一种好方法。但是间接获得显示标签，也对模板的获取增加了难度，而人为设计的不规范性，又雪上加霜。
 
-\begin{figure}[H]
+\begin{figure}[ht]
   \centering
   \includegraphics[width=0.8\columnwidth]{film-tl-rl}
   \caption{电影《疯狂动物城》模板标签与显示标签对比}
@@ -44,33 +44,37 @@
 
 尽管区分出信息框模板，模板中内容格式却不尽相同。根据版式特点，我们将信息框模板归为三类，分别为键值对模板、表格模板与继承模板，图\ref{fig:template-examples}给出三种模板示例，我们将在\ref{sec:property-extraction}中给出详细介绍。
 
-\begin{figure}[h]
-  \caption{模板类型举例}
-  \label{fig:template-examples}
-
-  \begin{subfigure}{4cm}
-    \includegraphics[height=4cm]{template-keyvalue}
-    \caption{键值对模板示例}
-  \end{subfigure}%
-  \hspace{0.01cm}%
-
-  \begin{subfigure}{4cm}
-    \includegraphics[height=4cm]{template-table}
-    \caption{表格模板示例}
-  \end{subfigure}%
-  \hspace{0.01cm}%
-
-  \begin{subfigure}{4cm}
-    \includegraphics[height=4cm]{template-inherit}
-    \caption{继承模板示例}
-  \end{subfigure}%
+\begin{figure}[ht]
+\centering
+    \begin{subfigure}{7.2cm}
+        \centering
+        \fbox{\includegraphics[width=0.8\textwidth,height=5.6cm]{template-keyvalue}}
+        \caption{键值对模板示例}
+        \label{fig:template-keyvalue}
+    \end{subfigure}%
+    \hspace{0.01cm}%
+    \begin{subfigure}{7.2cm}
+        \centering
+        \fbox{\includegraphics[width=0.8\textwidth,height=5.6cm]{template-inherit}}
+        \caption{继承模板示例}
+        \label{fig:template-inherit}
+    \end{subfigure}
+    \vspace{0.01cm}%
+    \begin{subfigure}{9.6cm}
+        \centering
+        \fbox{\includegraphics[width=0.8\textwidth]{template-table}}
+        \caption{表格模板示例}
+        \label{fig:template-table}
+    \end{subfigure}%
+\caption{模板类型举例}
+\label{fig:template-examples}
 \end{figure}
 
 除了以上三类，数据文件中还出现了{\heiti 重定向模板}，内容如图\ref{fig:template-redirect}。该类模板的出现，是因为维基百科经过多次整理与更新，会将相似模板合并，或重新定义模板名称，被删除的模板会重定向到新模板上。2016年2月的中文维基上，\textit{Template:Infobox Film}与\textit{Template:Infobox film}都重定向到\textit{Template: 电影信息框}。
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\columnwidth]{template-redirect}
+  \fbox{\includegraphics[width=0.75\columnwidth]{template-redirect}}
   \caption{重定向模板内容展示}
   \label{fig:template-redirect}
 \end{figure}
@@ -87,7 +91,7 @@
 \item 维基百科的模板可能有相近或重复，此时所代表的概念是存在包含关系的。因此严格来说，有$c = \{t_i|i=1,2...n\}$。
 \end{itemize}
 
-具体到维基百科，本章工作抽象为：给定一个维基百科$W = <T>$，生成概念集合$C$，其中$c = \{t_i|i=1,2...n\}, c \in C, t_i \in T$，以及概念属性集合$\Rho = \{P(c_i)| i = 1,2,...,n\}$，其中对于$p_{c_i} \in P_{c_i}$，有$p_{c_i} = <c_i, tl, rl>$。
+具体到维基百科，本章工作抽象为：给定一个维基百科$W = <T>$，生成概念集合$C$，其中$c = \{t_i|i=1,2...n\}, c \in C, t_i \in T$，以及概念属性集合$\mathbb{P} = \{P(c_i)| i = 1,2,...,n\}$，其中对于$p_{c_i} \in P_{c_i}$，有$p_{c_i} = <c_i, tl, rl>$。
 
 \section{概念属性生成}
 \label{sec:property-extraction}
@@ -95,18 +99,21 @@
 我们对三类信息框模板分别进行抽取，收集模板标签与显示标签的关系。我们发现，一个属性的显示标签，可能根据模板标签有所变化。抽取过程中，所有模板标签与显示标签的关系都会保留下来，我们以$<T, tl, rl>$的格式保留一组属性记录。
 
 {\heiti 键值对模板($T_{kv}$)(图\ref{fig:template-examples}a)：} 这种类型的模板，其显示标签与模板标签在infobox中以
-
-\begin{figure*}[ht]
+%\begin{figure}[ht]
+%\begin{center}
+%\framebox[0.3\linewidth]{
+%    \begin{minipage}[t]{0.25\linewidth}
+%    label=显示标签\\
+%    data=模板标签
+%    \end{minipage}
+%}
+%\end{center}
+%\end{figure}
 \begin{center}
-\framebox[0.4\linewidth]{
-    \begin{minipage}[t]{0.25\linewidth}
-    \ label=显示标签\\
-    \ data=模板标签 
-    \end{minipage}
-}
-\end{center}
-\end{figure*}
+\verb"label=显示标签"
 
+\verb"data=模板标签"
+\end{center}
 的格式存在。一个模板中，显示标签与模板标签的关系可能是一对一、一对多、多对多的，即一个属性根据不同的模板标签，可能会显示不同的标签在页面上。
 
 {\heiti 表格模板($T_{table}$)(图\ref{fig:template-examples}b)：}这种类型的模板以类似表格的形式对属性进行编排，抽取方法与键值对模板不同，根据表格行列思想，通过分析<td>等标签抽取。
@@ -127,18 +134,16 @@
 基于以上四类信息框模板，我们对2016.03版本的英文维基与2016.02版本的中文维基分别抽取，表\ref{tab:wiki-infobox-statistic}是对当前维基现状的统计分析。
 
 \begin{table}[htb]
-  \centering
-  \caption{中英文维基百科词条信息统计}
-  \label{tab:wiki-infobox-statistic}
-  \begin{minipage}[t]{1\textwidth} 
-    \begin{tabularx}{\linewidth}{lXXX}
-        \toprule[1.5pt]
-      {\heiti 维基百科} & {\heiti \#词条} &  {\heiti \#含有信息框词条} & {\heiti \#被使用模板} \\\midrule[1pt]
-      英文维基 & 5,138,426 & 2,344,305(45.6\%) & 4491 \\
-      中文维基 & 863,918   & 261,045(30.2\%)   & 2317  \\
-      \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
+    \centering
+    \caption{中英文维基百科词条信息统计}
+    \label{tab:wiki-infobox-statistic}
+    \begin{tabular}{cccc}
+    \toprule[1.5pt]
+    {\heiti 维基百科} & {\heiti 词条数} &  {\heiti 含有信息框的词条数及比例} & {\heiti 使用模板数} \\\midrule[1pt]
+    英文维基 & 5,138,426 & 2,344,305(45.6\%) & 4491 \\
+    中文维基 & 863,918   & 261,045(30.2\%)   & 2317  \\
+    \bottomrule[1.5pt]
+    \end{tabular}
 \end{table}
 
 得到各类型信息框模板数量如表\ref{tab:infobox-template}所示
@@ -147,15 +152,13 @@
   \centering
   \caption{各类型信息框模板数量}
   \label{tab:infobox-template}
-  \begin{minipage}[t]{1\textwidth} 
-    \begin{tabularx}{\linewidth}{lXXXXX}
-        \toprule[1.5pt]
-      {\heiti 维基百科} & {\heiti \#$T_{kv}$} &  {\heiti \#$T_{table}$} & {\heiti \#$T_inherit$} & {\heiti \#$T_redirect$} & {\heiti 总数}\\\midrule[1pt]
+  \begin{tabular}{cccccc}
+  \toprule[1.5pt]
+      {\heiti 维基百科} & {\heiti 键值对} &  {\heiti 表格类} & {\heiti 集成类} & {\heiti 重定向} & {\heiti 总数}\\\midrule[1pt]
       英文维基 & 1910 & 1901 & 1897 & 4076 & 9784\\
       中文维基 & 840  & 878  & 968  & 956  & 3642\\
-      \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
+  \bottomrule[1.5pt]
+  \end{tabular}
 \end{table}
 
 我们对各模板进行了分析，因为数据杂乱等原因，我们无法成果获取所有模板中的信息，而是以常用模板为优先，并以词条覆盖率90\%以上为目标结束属性生成任务。成功解析的属性信息如表\ref{tab:render-label}所示，其中不包括对重定向模板的解析。
@@ -164,15 +167,13 @@
   \centering
   \caption{概念属性信息生成结果}
   \label{tab:render-label}
-  \begin{minipage}[t]{1\textwidth} 
-    \begin{tabularx}{\linewidth}{lXXXX}
-        \toprule[1.5pt]
-      {\heiti 维基百科} & {\heiti \#$T$} & {\heiti \#模板属性} & {\heiti 属性/模板}  &{\heiti 模板标签/属性} \\\midrule[1pt]
+    \begin{tabular}{ccccc}
+    \toprule[1.5pt]
+      {\heiti 维基百科} & {\heiti 模版数} & {\heiti 模板中属性数} & {\heiti 属性/模板}  &{\heiti 模板标签/属性} \\\midrule[1pt]
       英文维基 & 3819 & 104741 & 27.45 & 1.27  \\
       中文维基 & 1895 & 44797  & 23.64 & 1.34  \\
-      \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
+    \bottomrule[1.5pt]
+    \end{tabular}
 \end{table}
 
 我们在\ref{tab:coverage}中给出当前生成的概念属性对维基百科的覆盖程度。实际使用的模板名称与模板正式名称的匹配率较低，需要经过一系列转化，包括：大小写转换、去除多余空格、重定向模板转换等。
@@ -182,27 +183,25 @@
   \centering
   \caption{结果覆盖率统计}
   \label{tab:coverage}
-  \begin{minipage}[t]{1\textwidth} 
-    \begin{tabularx}{\linewidth}{lXXX}
+    \begin{tabular}{cccc}
       \toprule[1.5pt]
-      {\heiti 维基百科} & {\heiti 模板覆盖率}  {\heiti 模板属性覆盖率}  & {\heiti 词条覆盖率} \\\midrule[1pt]
+      {\heiti 维基百科} & {\heiti 模板覆盖率} & {\heiti 模板属性覆盖率}  & {\heiti 词条覆盖率} \\\midrule[1pt]
       英文维基 & 87.6\% & 27\% & 96.7\%  \\
       中文维基 & 77.8\% & 33\% & 90.3\%  \\
       \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
+    \end{tabular}
 \end{table}
 
 \ref{tab:template-examples}给出了常用模板举例，\ref{tab:template-property-examples}给出了三个常用中文模板的部分属性举例。
 
-\begin{table}[htb]
+\begin{table}[htb]%建议把模版名中的infobox删掉
   \centering
   \caption{常用模板统计}
   \label{tab:template-examples}
-  \begin{minipage}[t]{1\textwidth} 
-    \begin{tabularx}{\linewidth}{XXXX}
-      \toprule[1.5pt]
-        \multicolumn{2}{c}{英文维基}   & \multicolumn{2}{c}{中文维基} \\ \midrule[1pt]
+    \begin{tabular}{llll}
+    \toprule[1.5pt]
+    \multicolumn{2}{c}{\heiti 英文维基}   & \multicolumn{2}{c}{\heiti 中文维基} \\
+       模版名称&使用频次&模版名称&使用频次 \\\midrule[1pt]
        Infobox settlement   & 253276 & Infobox Settlement & 34717 \\
        Infobox person       & 158481 & 艺人 & 14047 \\
        Infobox football biography & 127402 & Infobox Planet& 12163 \\
@@ -213,20 +212,18 @@
        Infobox company      & 46646 & Infobox person& 6414 \\
        Infobox NRHP         & 42385 & 电视节目信息框& 5958\\
        Infobox single       & 40578 & Infobox Company& 5138 \\
-      \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
+    \bottomrule[1.5pt]
+    \end{tabular}
 \end{table}
 
-\begin{table}[htb]
+\begin{table}[htb]%显示里的[[]]有必要保留吗？
   \centering
   \caption{常用模板属性举例}
   \label{tab:template-property-examples}
-  \begin{minipage}[t]{1\textwidth} 
-    \begin{tabularx}{\linewidth}{XXXXXX}
+  \begin{tabular}{llllll}
       \toprule[1.5pt]
-        \multicolumn{2}{c}{艺人}  & \multicolumn{2}{c}{Planet} & \multicolumn{2}{c}{电影信息框}\\ \midrule[1pt]
-        模板& 显示 & 模板& 显示& 模板& 显示\\
+        \multicolumn{2}{c}{\heiti 艺人}  & \multicolumn{2}{c}{\heiti Planet} & \multicolumn{2}{c}{\heiti 电影}\\
+        模板& 显示 & 模板& 显示& 模板& 显示\\ \midrule[1pt]
         Alias & 昵称      & discovered & 发现日期      & budget & 预算 \\
         hometown& 籍贯    & discoverer & 发现者        & director & 导演\\
         URL& 网站         & density & 平均[[密度]]     & producer& 监制 \\
@@ -234,8 +231,7 @@
         children& 儿女    & inclination & [[轨道倾角]] & starring & 主演\\
         country & 国籍    & named\_after& 命名依据     & music &  配乐作曲\\
       \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
+  \end{tabular}
 \end{table}
 
 %\section{概念合并}

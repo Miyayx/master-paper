@@ -11,7 +11,7 @@
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.8\columnwidth]{frozen-infobox}
+  \includegraphics[width=0.9\columnwidth]{frozen-infobox}
   \caption{中英文信息框属性对齐示例}
   \label{fig:frozen-infobox}
 \end{figure}
@@ -97,11 +97,11 @@
 则有：
 \begin{align}
 \label{equ:tf}
-tf_{i,j}=\frac{n_{i,j}}{\sum_{k}{n_{k,j}}} 
+tf_{i,j}=\frac{n_{i,j}}{\sum_{k}{n_{k,j}}}
 \end{align}
 \begin{align}
 \label{equ:idf}
-idf_{i}=1+log\frac{\left | D \right |}{\left | j:t_i  \epsilon d_j \right |} 
+idf_{i}=1+log\frac{\left | D \right |}{\left | j:t_i  \epsilon d_j \right |}
 \end{align}
 \begin{align}
 \label{equ:tfidf}
@@ -115,7 +115,7 @@ n_{i,j} = {\sum_{k}{x_{k,j}}}\\
 \end{align}
 
 \begin{align}
-x_{k,j} = 
+x_{k,j} =
 \left\{\begin{matrix}
 2 & p_i = p_{direct} \ in \ d_j\\
 1 & p_i = p_{indirect} \ in \ d_j\\
@@ -146,17 +146,15 @@ x_{k,j} =
 
 \begin{table}[htb]
   \centering
-  \caption 方法对比结果
+  \caption{方法对比结果}
   \label{tab:similar-property-compare}
-  \begin{minipage}[t]{1\textwidth} 
-    \begin{tabularx}{\linewidth}{lXXXX}
+    \begin{tabular}{ccccc}
     \toprule[1.5pt]
       {\heiti 方法} & {\heiti 准确率} & {\heiti 召回率} & {\heiti 相似属性数量} & {\heiti 超级属性数量(${\#sp}>1$)} \\\midrule[1pt]
       基于同语言对齐 & 1 & 1 & 1 & 1 \\
       聚类方法       & 1 & 1 & 1 & 1 \\
       \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
+    \end{tabular}
 \end{table}
 
 经过表\ref{tab:similar-property-compare}中对比可看出，基于相似度的聚类方法，虽然在数量上有明显增加，提高了召回率，但准确率却有所损失。超属性作为之后跨语言对齐的对象，其存在的瑕疵会造成错误累加，因此对其质量要求很高。基于此，我们使用同语言对齐的同时获得的相似属性结果，来保证之后工作的高质量。
@@ -169,17 +167,21 @@ x_{k,j} =
 
 \begin{figure}[h]
   \centering%
-  \begin{subfigure}{3cm}
-    \includegraphics[height=3cm]{enwiki-zhwiki-property-crosslinks-1}
+  \begin{subfigure}{0.48\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{enwiki-zhwiki-property-crosslinks-1}
     \caption{基于跨语言模板对齐}
   \end{subfigure}%
-  \hspace{4em}%
-  \begin{subfigure}{0.5\textwidth}
-    \includegraphics[height=3cm]{enwiki-zhwiki-property-crosslinks-2}
+  \hspace{0.01cm}%
+  \begin{subfigure}{0.48\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{enwiki-zhwiki-property-crosslinks-1}%为了对齐和上面用的同一张图
     \caption{基于跨语言实例对齐}
   \end{subfigure}
+  \vspace{0.01cm}%
   \begin{subfigure}{0.5\textwidth}
-    \includegraphics[height=3cm]{enwiki-zhwiki-property-crosslinks-3}
+    \centering
+    \includegraphics[width=0.8\textwidth]{enwiki-zhwiki-property-crosslinks-3}
     \caption{基于属性值对齐}
   \end{subfigure}
   \caption{中英文维基属性跨语言抽取说明}
@@ -199,51 +201,45 @@ x_{k,j} =
 
 \begin{table}[htb]
   \centering
-  \caption 中英文维基属性跨语言对齐结果
+  \caption{中英文维基属性跨语言对齐结果}
   \label{tab:zhwiki-enwiki-cross-lingual}
-  \begin{minipage}[t]{1\textwidth} 
-    \begin{tabularx}{\linewidth}{X|X|X|}
+    \begin{tabular}{ccc} \toprule[1.5pt]
       {\heiti 对齐方法} & {\heiti 数量} &  {\heiti 举例} \\\midrule[1pt]
       基于属性名称   & 1 & 1  \\
       基于相同属性值 & 1 & 1  \\
       基于相似属性值 & 1 & 1  \\
       总数           & 1 & -  \\
       \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
+    \end{tabular}
 \end{table}
 
 第二步我们使用2014.12版本的百科数据与中文维基进行对齐。经历三步提取，最终结果在表\ref{tab:zhwiki-baidu-cross-lingual}中展示。
 
 \begin{table}[htb]
   \centering
-  \caption 中文维基与百度百科属性对齐结果
+  \caption{中文维基与百度百科属性对齐结果}
   \label{tab:zhwiki-baidu-cross-lingual}
-  \begin{minipage}[t]{1\textwidth} 
-    \begin{tabularx}{\linewidth}{X|X|X|}
+    \begin{tabular}{ccc}\toprule[1.5pt]
       {\heiti 对齐方法} & {\heiti 数量} &  {\heiti 举例} \\\midrule[1pt]
       基于跨语言模板对齐 & 1 & 1  \\
       基于跨语言实例对齐 & 1 & 1  \\
       基于属性值对齐     & 1 & 1  \\
       总数               & 1 & -  \\
       \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
+    \end{tabular}
 \end{table}
 
 在最终的跨语言属性种子集合生成结果中，我们以{\heiti 模板:属性标签}表征一个属性，即属性带有领域信息。我们还发现，对于一个属性，可能有一义多词的现象出现。最终结果统计见表\ref{tab:cross-lingual-seed}。
 
 \begin{table}[htb]
   \centering
-  \caption 跨语言属性初步对齐结果
+  \caption{跨语言属性初步对齐结果}
   \label{tab:cross-lingual-seed}
-  \begin{minipage}[t]{1\textwidth} 
-    \begin{tabularx}{\linewidth}{XXX|}
+    \begin{tabular}{ccc}\toprule[1.5pt]
       {\heiti 对齐数量} & {\heiti 英文模板数量} &  {\heiti 一对多属性数量} \\\midrule[1pt]
       1 & 1 & 1  \\
       \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
+    \end{tabular}
 \end{table}
 
 
@@ -262,7 +258,7 @@ edit\_distance\_sim(s_1, s_2) = \frac{edit\_distance(s_1, s_2))}{max(\left| s_1 
 标签相似度：对中英文属性的标签进行计算，转换成同语言后，分别进行中文相似度计算与英文相似度计算，取最大值作为特征值。
 \begin{equation}
 \label{}
-sim_{label}(sp_e, sp_z) = max(ed\_sim(label(p_e), translate(label(p_z)), ed\_sim(translate(label(p_e)), label(p_z))) 
+sim_{label}(sp_e, sp_z) = max(ed\_sim(label(p_e), translate(label(p_z)), ed\_sim(translate(label(p_e)), label(p_z)))
 \end{equation}
 
 属性值相似度：属性值是衡量两个属性是否对齐的最直接指标，如果两个属性在同一篇词条下具有相同属性值，它们匹配的可能性就很大。根据属性值的内容，我们将其分为三类，分别为文章型、数字型、纯文本型，每一种类型，采用不同的相似度计算策略。
@@ -270,7 +266,7 @@ sim_{label}(sp_e, sp_z) = max(ed\_sim(label(p_e), translate(label(p_z)), ed\_sim
 文章型属性值：如果属性值表示一个实体，即其链接到一个词条，认为它是文章型属性。这类属性，对于其“相等”的定义为：如果两个实体是跨语言链接关系，即表征同一实体，则认为属性值相等:
 \begin{equation}
 Equal(a,a')=\left\{\begin{matrix}
-1 \ if <a,a'> in \ CL\\ 
+1 \ if <a,a'> in \ CL\\
 0 \ else
 \end{matrix}\right.
 \end{equation}
@@ -287,7 +283,7 @@ $A(sp)\cap CL(A)$为含有跨语言链接的词条集合。
 
 \begin{equation}
 \label{equ:number_value_similarity}
-sim_{number\_v}(sp_e, sp_z) = 
+sim_{number\_v}(sp_e, sp_z) =
 \end{equation}
 
 文本型属性值：既不指向实体，又没有数字特征的属性值，被认为是文本型属性值。我们用编辑距离方法计算其相似度\ref{}:
@@ -303,7 +299,7 @@ sim_{literal\_v}(sp_e, sp_z) =
 \end{equation}
 
 {\heiti 基于语义特征}
-当前大部分跨领域的知识库都以在线百科为数据源而建立。百科内部本身就存在着一些语义关系，比如子分类和父分类间的\textit{subClassOf}关系、词条实体与分类之间的\textit{instanceOf}关系。语义信息常被用来抽取特征［老大的论文］，表示实例等在结构上的特点。我们利用百科里现有的语义关系，抽取出两个特征，分别为文章相似度与概念相似度。 
+当前大部分跨领域的知识库都以在线百科为数据源而建立。百科内部本身就存在着一些语义关系，比如子分类和父分类间的\textit{subClassOf}关系、词条实体与分类之间的\textit{instanceOf}关系。语义信息常被用来抽取特征［老大的论文］，表示实例等在结构上的特点。我们利用百科里现有的语义关系，抽取出两个特征，分别为文章相似度与概念相似度。
 
 文章相似度即计算使用两属性词条的交集，定义为：\ref{}，概念相似度即计算两属性领域的相似程度。
 
@@ -311,7 +307,7 @@ sim_{literal\_v}(sp_e, sp_z) =
 {\heiti 基于分布特征}
 是基于假设：\textit{同一属性即使在不同百科中，被使用频率也相近。}我们称之为受欢迎(Popular)程度，该特征的定义为：
 \begin{equation}
-sim_{popular}(sp_e, sp_z) = 
+sim_{popular}(sp_e, sp_z) =
 \end{equation}
 
 \subsubsection{实验结果}
@@ -324,44 +320,40 @@ Precision =
 \end{align}
 
 \begin{align}
-Recall = 
+Recall =
 \end{align}
 
 \begin{align}
-F1-Score = 
+F1-Score =
 \end{align}
 
 我们的训练与测试数据来自\ref{}中抽取的跨语言属性链接种子。取2000个为正例，随机组合取2000个负例，带入逻辑斯谛回归模型。最终结果显示在表\ref{tab:property-matching-result}
 
 \begin{table}[htb]
   \centering
-  \caption 跨语言属性对齐方法评测结果
+  \caption{跨语言属性对齐方法评测结果}
   \label{tab:property-matching-result}
-  \begin{minipage}[t]{1\textwidth} 
-    \begin{tabularx}{\linewidth}{X|X|X|X|}
+    \begin{tabular}{cccc}\toprule[1.5pt]
       {\heiti 方法} & {\heiti 准确率} &  {\heiti 召回率} & {\heiti F1值}  \\ \midrule[1pt]
       跨语言属性对齐 & 83\% & 50\% & 1  \\
       \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
+    \end{tabular}
 \end{table}
 
 此外，对不同特征做出的贡献，我们也在表\ref{tab:feature-compare}中给出了对比：
 
 \begin{table}[htb]
   \centering
-  \caption 特征组合对结果的影响
+  \caption{特征组合对结果的影响}
   \label{tab:feature-compare}
-  \begin{minipage}[t]{1\textwidth} 
-    \begin{tabularx}{\linewidth}{lXXX}
+    \begin{tabular}{cccc}\toprule[1.5pt]
       {\heiti 特征组合} & {\heiti 准确率} &  {\heiti 召回率} & {\heiti F1值}  \\ \midrule[1pt]
        & 83\% & 50\% & 1  \\
        & 83\% & 50\% & 1  \\
        & 83\% & 50\% & 1  \\
        & 83\% & 50\% & 1  \\
       \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
+    \end{tabular}
 \end{table}
 
 \section{本章小结}
