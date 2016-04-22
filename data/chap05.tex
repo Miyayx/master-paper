@@ -16,7 +16,7 @@
 
 XLore知识库融合中英文维基百科、百度百科与互动百科的信息，大大增加了中文知识数量，并利用大量跨语言链接提高中英文的融合度。构建过程中，我们首先从维基的数据存储文件，与百度、互动百科的网页信息中抽取出结构化语义信息，利用对齐关系合并成一体，并对分类体系进行剪枝，最后将数据转换成RDF三元组格式，导入Virtuoso数据库。具体流程图见图\ref{fig:xlore-preprocess}
 
-\begin{figure}[H] % use float package if you want it here
+\begin{figure}[H] 
   \centering
   \includegraphics[width=0.8\columnwidth]{xlore_preprocess}
   \caption{跨语言知识库XLore构建流程}
@@ -79,10 +79,10 @@ XLore知识库融合中英文维基百科、百度百科与互动百科的信息
 
 跨语言链接的抽取来源有两部分：
 \begin{enumerate}[1.]
-\item {\heiti 维基百科跨语言链接：} 维基百科已经人工编辑了跨语言链接，截止到2015年8月，维基百科的中英文跨语言链接有xxx个，占英文词条总数的xx％。 通过抽取这些链接，我们获得了概念与实例的初始跨语言链接集合。 \\
+\item {\heiti 维基百科跨语言链接：} 维基百科已经人工编辑了跨语言链接，截止到2015年8月，维基百科的中英文跨语言链接有22万对左右，占英文词条总数的5％。 通过抽取这些链接，我们获得了概念与实例的初始跨语言链接集合。 \\
 属性的跨语言链接不能直接获取，我们使用\ref{cha:property-matching}中的种子集合来帮助构建跨语言知识库。
 
-\item {\heiti 跨语言链接扩展：} 我们运用［xx］中提到的语言非依赖方法，扩展链接集合。该方法提出xxx，xxx，xxx的假设，提取出对应特征，构建连锁因子图，最终获得基于英文维基百科与百度百科的215,000个跨语言链接。
+\item {\heiti 跨语言链接扩展：} 我们运用\cite{wang2012cross}中提到的语言非依赖方法，扩展链接集合。该方法利用词条链接、词条分类、作者兴趣与相似词条的关系，提取出对应特征，构建连锁因子图，最终获得基于英文维基百科与百度百科的215,000个跨语言链接。
 \end{enumerate}
 
 %利用该方法，我们以xxxx个维基百科中英文跨语言链接为种子集合，抽取出xxx个维基－百度链接。
@@ -119,7 +119,7 @@ XLore知识库融合中英文维基百科、百度百科与互动百科的信息
 
 %剪枝后的理想状态下的分类体系应该是树状的，其中边、结点与叶子结点分别代表语义关系、概念与实例。但是，因为在删除不正确语义关系的过程中，中没有将完整性考虑在内，实际的结果应该是森林形状的。
 
-为了语义关系的完整性，我们保留了剔除的语义关系，并为其定义了两种新关系，来表征数据的相关性：为实例－概念关系relatedClassOf关系，概念－概念定义了relatedTopicOf关系。
+为了语义关系的完整性，我们保留了剔除的语义关系，并为其定义了两种新关系，来表征数据的相关性：为实例－概念定义relatedClassOf关系，概念－概念定义了relatedTopicOf关系。
 
 \subsection{跨语言知识融合}
             
@@ -141,31 +141,37 @@ XLore知识库融合中英文维基百科、百度百科与互动百科的信息
 
 \begin{table}[htb]
     \centering
+  \begin{minipage}[t]{0.8\linewidth}
     \caption{各元素抽取结果统计}
     \label{tab:extract-result}
     \begin{tabularx}{\linewidth}{lXXXX}
+        \toprule[1.5pt]
                & 英文维基    & 中文维基   & 互动百科    & 百度百科     \\ \midrule[1pt]
         \#概念 & 982,432   & 159,705  & 31,802    & 1300      \\ 
         \#实例 & 4,304,113 & 662,650  & 5,590,751 & 5,622,404 \\ 
         \#属性 & 43,976    & 18,842   & 1187      & 139,634   \\ 
         \bottomrule[1.5pt]
     \end{tabularx}
+  \end{minipage}
 \end{table}
 
 \begin{table}[htb]
     \centering
+  \begin{minipage}[t]{0.9\linewidth}
     \caption{XLore结果展示}
     \label{tab:xlore-result}
-    \begin{tabularx}{\linewidth}{lXXX}
-        \multicolumn{1}{|c|}{} & \multicolumn{2}{c|}{概念}     & \multicolumn{2}{c|}{实例}                   & \multicolumn{2}{c|}{属性}    \\ \hline
-英文            & 639,020 & 96.26\%                & 3,879,121              & 38.79\%                & 15,380  & 27.24\%                \\ \hline
-中文            & 88,615  & 13.35\%                & 7,409,519              & 68.25\%                & 51,618  & 91.44\%                \\ \hline
-跨语言          & 63,895  & 9.63\%                 & 432,598                & 3.98\%                 & 10,549  & 18.69\%                \\ \hline
-%English O       & 575,125 & 86.65\%                & 3,446,523              & 31.75\%                & 4,831   & 8.56\%    \\ \hline
-%Chinese O       & 24,720  & 3.72\%                 & 6,976,921              & 64,27\%                & 41,069  & 72.75\%   \\ \hline
-总数           & 663,740 & \multicolumn{1}{c|}{-} & 10,856,042             & \multicolumn{1}{c|}{-} & 56,449  & \multicolumn{1}{c|}{-} \\ \hline
+    \begin{tabularx}{\linewidth}{lXXXXXX} 
+        \toprule[1.5pt]
+        \multicolumn{1}{c}{} & \multicolumn{2}{c}{概念}     & \multicolumn{2}{c}{实例}                   & \multicolumn{2}{c}{属性}    \\ \midrule[1pt]
+英文            & 639,020 & 96.26\%          & 3,879,121   & 38.79\%                & 15,380  & 27.24\%                \\ 
+中文            & 88,615  & 13.35\%          & 7,409,519   & 68.25\%                & 51,618  & 91.44\%                \\ 
+跨语言          & 63,895  & 9.63\%           & 432,598     & 3.98\%                 & 10,549  & 18.69\%                \\ 
+%English O       & 575,125 & 86.65\%                & 3,446,523           & 31.75\%                & 4,831   & 8.56\%    \\ \hline
+%Chinese O       & 24,720  & 3.72\%                 & 6,976,921           & 64,27\%                & 41,069  & 72.75\%   \\ \hline
+总数           & 663,740 & {-}               & 10,856,042  & {-}                    & 56,449  & {-} \\
       \bottomrule[1.5pt]
     \end{tabularx}
+  \end{minipage}
 \end{table}
 
 \section{XLore系统介绍}
@@ -177,7 +183,7 @@ XLore网站系统旨在对外显示我们的数据数量与语义关系，并向
 
 \begin{figure}[H] 
   \centering
-  \includegraphics[width=0.8\columnwidth]{xlore-architecture}
+  \includegraphics[width=0.9\columnwidth]{xlore-architecture}
   \caption{XLore系统架构图}
   \label{fig:xlore-architecture}
 \end{figure}
@@ -193,7 +199,7 @@ Web框架采用JSP＋Struts2.0搭建，运行在Tomcat7.0 Web服务器上。页�
 对于概念与实例，我们基于D3.js可视化库\footnote{https://d3js.org/}，提供了关系可视化，包括概念-子概念的关系，实例-相关实例的关系。
 
 \subsection{XLore知识展示}
-图\ref{fig:xlore-home}为XLore网站首页。截止到2015年8月，我们的跨语言知识库中包含有xxx个概念、xxx个实例、xxx个属性。首页以表格的形式提供了顶层及其下两层的概念层及其统计数据，点击左边“＋”按钮可获得子概念样例。除此之外，首页列出了一些实例例子，点击可直接查看相应实例页面。
+图\ref{fig:xlore-home}为XLore网站首页。截止到2015年8月，我们的跨语言知识库中包含有663,740个概念、56,449个属性、10,856,042个实例。首页以表格的形式提供了顶层及其下两层的概念层及其统计数据，点击左边“＋”按钮可获得子概念样例。除此之外，首页列出了一些实例例子，点击可直接查看相应实例页面。
 
 \begin{figure}[H] 
   \centering
@@ -218,24 +224,43 @@ XLore网站为三种知识提供展示，分别为概念、属性、实例。
 
 \subsection{XLore关系可视化}
 
-XLore提供了两个数据可视化展示，分别为概念上下位关系可视化与相关实例可视化，图\ref{fig:xlore-visualization}为可视化例子，前者显示指定概念及其子概念(黄色)、父概念(绿色)，后者显示指定实例及其相关实例，以相关领域划分，直接相关实例（信息框中实例）距离近，间接相关实例（文本内链接实例）距离较远。
+XLore提供了两个数据可视化展示，分别为概念上下位关系可视化与相关实例可视化，图\ref{fig:xlore-visualization}为可视化例子，图\ref{fig:xlore-visualization-instance}显示指定实例及其相关实例，以相关领域划分，直接相关实例（信息框中实例）距离近，间接相关实例（文本内链接实例）距离较远；图\ref{fig:xlore-visualization-concept}显示指定概念及其子概念(黄色)、父概念(绿色)。
 
 \begin{figure}[H] 
   \centering
-  \begin{subfigure}{3cm}
-    \includegraphics[height=5cm]{xlore-visualization-instance}
+  \begin{subfigure}{7.2cm}
+    \includegraphics[height=5.4cm]{xlore-visualization-instance}
     \caption{实例可视化例子(阿甘正传)}
-  %\label{fig:xlore-visualization-instance}
+  \label{fig:xlore-visualization-instance}
   \end{subfigure}
-  \hspace{4em}%
-  \begin{subfigure}{0.8\textwidth}
-    \includegraphics[height=5cm]{xlore-visualization-concept}
+  \hspace{0.01cm}%
+  \begin{subfigure}{7.2cm}
+    \includegraphics[height=5.4cm]{xlore-visualization-concept}
     \caption{概念可视化例子(计算机科学家)}
-  %\label{fig:xlore-visualization-concept}
+  \label{fig:xlore-visualization-concept}
   \end{subfigure}
   \caption{关系可视化例子}
   \label{fig:xlore-visualization}
 \end{figure}
+
+%\begin{figure}
+%\centering
+%\begin{subfigure}{7.2cm}
+%\centering
+%\includegraphics[height=5.4cm]{s2c-pie}
+%\caption{饼状图}
+%\label{fig:pie}
+%\end{subfigure}
+%\hspace{0.01cm}
+%\begin{subfigure}{7.2cm}
+%\centering
+%\includegraphics[height=5.4cm]{s2c-scatter}
+%\caption{散列图}
+%\label{fig:scatter}
+%\end{subfigure}
+%\caption{新闻句子与对齐用户评论数分布图}
+%\label{fig:s2c}
+%\end{figure}
 
 \subsection{XLore知识查询}
 XLore提供搜索框文本查询与SPARQL语句查询两种查询方法。
@@ -267,26 +292,29 @@ XLore提供搜索框文本查询与SPARQL语句查询两种查询方法。
 
 XLore作为一个通用领域的跨语言知识库，在囊括了大量知识的基础上，提供了基于实体-名称词典扩展的实体链接接口。
 
-XLore实体链接接口提供了三种类型的查询：
+XLore实体链接接口提供了四种类型的查询：
 \begin{enumerate}[1.]
 \item 通用领域的名称查询：给出一个通用领域的名称，返回其在XLore中最可能指向的一个或几个实体以及实体的中英文信息；
 \item 通用领域的文本实体查询：给出一串文本，对文本进行实体名称抽取后，返回名称列表中各名称在XLore中最可能指向的实体及实体的中英文信息；
 \item 学术领域的名称查询：给出一个学术领域的名称，如“机器学习”，返回其在XLore中学术领域指向的实体以及实体的中英文信息。
+\item 学术领域的文本查询：给出一个学术领域相关的文本，经过术语抽取后，返回术语在XLore中学术领域指向的实体以及实体的中英文信息。
 \end{enumerate}
 
 该接口框架如图\ref{fig:entity-linking-architecture}
-该接口以中英文名称或文本为输入，经过实体抽取、实体候选生成、实体消歧，确定与名称和上下文最匹配的实体，返回实体列表与中英文实体信息。
+该接口以中英文名称或文本为输入，经过实体抽取、实体候选生成、实体排歧，确定与名称和上下文最匹配的实体，返回实体列表与中英文实体信息。
 \begin{figure}[H] 
   \centering
-  \includegraphics[width=0.8\columnwidth]{entity-linking-architecture}
+  \includegraphics[width=1\columnwidth]{entity-linking-architecture}
   \caption{XLore 实体链接接口框架图}
   \label{fig:entity-linking-architecture}
 \end{figure}
 
 \subsection{实体抽取}
-通用领域实体抽取使用xxx方法，主要获得xx，xxx，xxx类型的实体。
-
-学术领域实体抽取采用xxx方法，该方法xxxx。
+对于给定的长文本，首先要提取出其中可以分析的实体文本。该阶段，我们引入成熟的实体或术语抽取工具，包括：
+\begin{itemize}
+\item 通用领域实体抽取，中文使用开源中文分词工具jieba\footnote{https://github.com/fxsjy/jieba}，主要获得其中nt、nz、nr、ns类型的实体；英文使用Stanford Parser\footnote{http://nlp.stanford.edu/software/lex-parser.shtml}解析工具，获取PERSON、LOCATION、ORGANIZATION三类实体。
+\item 学术领域实体抽取使用来自微软的学术术语抽取工具。
+\end{itemize}
 
 \subsection{实体候选生成}
 
@@ -297,6 +325,7 @@ XLore实体链接接口提供了三种类型的查询：
 \item 各百科的文本内链接：百科词条的文本中，经常会有一些实体名称，以超链接的形式存在，指向该实体对应的词条。这个超链接的锚文本，可以看作是指向实体的同义词或别称，锚文本与实体词条构成一条名称-实体信息。
 \item 各百科的消歧页面：如果一个名称可能对应多个实体，百科会为其创建一个歧义页面，供用户按所需选择词条。比如，“苹果”是一个歧义词汇，则歧义页面中会列举“苹果（蔷薇科苹果属果实）”、“苹果产品公司”等词条。维基百科通过“苹果\_(消歧义)”这样的页面［链接地址］展示词条，百度百科则通过为“苹果”父词条［链接地址］创建subview子词条来进行区分，如果一个词条没有歧义，则它的网页地址以id定位；如果一个词条有多种意思，则它的id页面为歧义页面，各子词条网址用subview id定位。消歧页面对于抽取实体的别称也有很大贡献。
 \item 维基百科的重定向页面： 维基百科通过不断进行词条整理与更新，对一些陈旧的、非标准词条，或公认的缩写名称、别称等，将其自动定位到同一实体的标准词条页面上。原来的旧名称、缩写等可以看作实体的名称。比如中文维基中，“Microsoft”会被重定向到“微软”页面。
+\end{enumerate}
 
 以2016年3月的中英文维基百科、2014年12月的百度百科、互动百科为数据源，我们获得名称－实体关系数量如表 \ref{tab:mention-entity}所示：
 
@@ -304,33 +333,45 @@ XLore实体链接接口提供了三种类型的查询：
   \centering
   \caption 名称-实体关系对抽取数量统计
   \label{tab:mention-entity}
-  \begin{minipage}[t]{0.8\textwidth} % 如果想在表格中使用脚注，minipage是个不错的办法
-    \begin{tabularx}{\linewidth}{l|X|X|X|X|}
+  \begin{minipage}[t]{0.8\textwidth} 
+    \begin{tabularx}{\linewidth}{lXXXX}
+      \toprule[1.5pt]
       {\heiti } & {\heiti 英文维基} & {\heiti 中文维基} & {\heiti 百度百科} & {\heiti 互动百科} \\\midrule[1pt]
-      标题 & 1 & 1 & 1 & 1 \\
-      内链接 & 1 & 1 & 1 & 1 \\
-      消歧页面 & 1 & 1 & 1 & 1 \\
-      重定向页面 & 1 & 1 & 1 & 1 \\
+      标题 &  & 2,739,609 & 1 & 1 \\
+      内链接 &  & 1 & 1 & 1 \\
+      消歧页面 & 1 & 1 & 174,862 & 24,158 \\
+      重定向页面 & 1 & 1 & -  & - \\
+      合并总对数 & 1 & 1 & 1 & 1 \\
       \bottomrule[1.5pt]
     \end{tabularx}
   \end{minipage}
 \end{table}
 
-最终获得中英文名称－实体对应关系总数量为：xxx对。
-在抽取过程中，我们对名称－实体的出现频数进行了记录，用于之后的排歧工作，将会在之后详细说明。以\textit{名称 制表符 实体知识库uri 制表符 出现频数}为格式存储数据，并以名称为索引，将数据导入到MySQL数据库中，便于查询。
+抽取结果合并后，获得中英文名称－实体对应关系总数量为67,429,935对。我们只保留在XLore中能命中的实体，最终获得23,635,510对关系。平均每个实体有1.97个名称，每个名称可能对应1.32个实体。
+%17845907个mention， 11987986个entity
+
+在抽取过程中，我们对名称－实体的出现频数进行了记录，用于之后的排歧工作。以\textit{名称 \ 实体知识库uri \ 出现频数}为格式存储数据，并以名称为索引，将数据导入到MySQL数据库中，便于查询。
 
 \subsection{实体消歧方法}
-实体消歧主要是对候选实体进行可能性排序，
-对于通用领域的名称查询，因为没有任何上下文信息，我们只能直接以频数从高到低排序，返回受认可的一个或多个实体信息。
+实体消歧主要是对候选实体的匹配可能性进行排序，
+对于通用领域的名称查询，因为没有任何上下文信息，我们只能直接以流行度(出现频数)从高到低排序，返回受到广泛认可的一个或多个实体信息。
+对于学术领域的查询，我们利用知识库特有的分类体系，凭借领域约束，将实体的查找限制在相关概念下。
 
-对于通用领域的文本查询，我们根据上下文，为每个名称返回最相关的实体。具体来说：
+对于通用领域的文本查询，我们根据上下文，为每个名称返回最相关的实体。具体来说，对于给定名称，为其每个候选实体计算一个背景相关度，最相关的最可能为所求实体。
+给定一段文本$T$，经过实体抽取后获得实体名称集合$M$，对于$m_i \in M$，计算$m_i$的一个实体候选$c_{i,j} \in C(m_i)$的相关度：
 \begin{itemize}
-\item 1.  计算文本相关度：认为自身信息与上下文有关的实体更相关，提取实体上下文，与实体的摘要进行cosine相似度计算。
-\item 2.  计算语义相关度：认为与文中其他实体有语义关系的实体更相关：提取根据文中其他实体，找出相关概念，xxxx。
-\item 3.  取两个相关度的最大值。
-\end{itemize}
+\item 1.  计算上下文相关度($R_a$)：认为自身信息与上下文有关的实体更相关，提取名称文本$T$，与实体的摘要$A(c_{i,j})$进行Cosine相似度计算。
 
-对于学术领域的名称查询，我们利用知识库特有的领域限制，将实体的查找限制在相关概念下。
+\item 2.  计算合作实体相关度($R_e$)：认为与文中其他实体有语义关系的实体更相关，提取根据文中其他名称$M'=$对应的实体候选$C(M') = $，与本名称的实体候选的相关实体，即文本中的链接实体$I(c_{i,j})$做交集。
+\begin{equation}
+{ R }_{ e }=\frac { \left| C\left( M' \right) \cap I\left( { c }_{ i,j } \right)  \right|  }{ \left| I\left( { c }_{ i,j } \right)  \right| +1 } 
+\end{equation}
+\item 3.  取两个相关度的最大值。
+\begin{equation}
+R = \max{ \left(R_a, R_e \right)}
+\end{equation}
+\end{itemize}
+$R_{i,j}$ 即为实体候选$c_{i,j}$与名称$m_i$的相关度，$R_{i,j}$越大，$c_{i,j}$越可能是所求实体。
 
 \subsection{实体链接接口的应用}
 该实体链接接口的学术领域名称查找功能，应用在Aminer学术搜索系统\footnote{https://aminer.org/}的学术知识展示模块上，如图\ref{fig:el-aminer}所示：用户在搜索学术领域词汇时，右边会显示该词汇对应的学术实体信息，及其相关上下文概念。
@@ -341,12 +382,12 @@ XLore实体链接接口提供了三种类型的查询：
   \label{fig:el-aminer}
 \end{figure}
 
-通用领域名称查找功能，应用在xxx系统，分析新闻文本，提供实体信息。如图\ref{fig:el-news}所示：
+通用领域名称查找功能，应用在新闻分析系统NewsMiner\footnote{http://newsminer.net}上，分析新闻文本，提供实体信息。如图\ref{fig:el-newsminer}所示：
 \begin{figure}[H] 
   \centering
-  \includegraphics[width=0.8\columnwidth]{el-news}
-  \caption{XLore实体链接接口在新闻上的应用}
-  \label{fig:el-news}
+  \includegraphics[width=0.8\columnwidth]{el-newsminer}
+  \caption{XLore实体链接接口在NewsMiner上的应用}
+  \label{fig:el-newsminer}
 \end{figure}
 
 \section{本章小结}
