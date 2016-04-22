@@ -9,14 +9,14 @@
 
 然而中文知识库领域，搜狗、百度等商业化知识图谱仅供自家公司商用，并没有开放数据。Zhishi.me\footnote{http://zhishi.me/}作为第一个科研领域的中文知识库，早期提供实体查询接口与SPARQL查询接口，现数据与网站都久未更新。
 
-我们的中英文跨语言知识库XLore，提供了数据展示页面、知识搜索功能、SPARQL查询接口、实例关系可视化、实体链接等多项功能，本章将具体阐述XLore网站系统的搭建（详见\ref{sec5:system-discribe}）与实体链接接口的构建（详见\ref{sec5:entity-linking-api}）。
+我们的中英文跨语言知识库XLore，提供了数据展示页面、知识搜索功能、SPARQL查询接口、实例关系可视化、实体链接等多项功能，本章将具体阐述XLore网站系统的搭建（详见\ref{sec5:system-describe}）与实体链接接口的构建（详见\ref{sec5:entity-linking-api}）。
 
 \section{大规模中英文跨语言知识库XLore的构建}
 \label{sec5:cross-lingual-knowledge-base}
 
 XLore知识库融合中英文维基百科、百度百科与互动百科的信息，大大增加了中文知识数量，并利用大量跨语言链接提高中英文的融合度。构建过程中，我们首先从维基的数据存储文件，与百度、互动百科的网页信息中抽取出结构化语义信息，利用对齐关系合并成一体，并对分类体系进行剪枝，最后将数据转换成RDF三元组格式，导入Virtuoso数据库。具体流程图见图\ref{fig:xlore-preprocess}
 
-\begin{figure}[H] 
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\columnwidth]{xlore_preprocess}
   \caption{跨语言知识库XLore构建流程}
@@ -61,7 +61,7 @@ XLore知识库融合中英文维基百科、百度百科与互动百科的信息
 
 %维基百科中包含大量自己定义的辅助性页面，会混入抽取的词条结果中。在抽取过程中，我们通过定义词条标题模式，将说明型（比如Media：，Help：）、结构型（比如Template：）以及列表型（List of。。）等带有维基百科特色的词条删除，只保留实体描述型词条。
 %
-%每个词条页面都包含分类关系、属性信息。以图xxx中，电影星际穿越（Interstellar）的词条页面为例，该词条所属的类别，以超链接标签的形式罗列在页面底部。我们认为这是该实例所具有的概念，即美国科幻片（American science fiction films）是星际穿越（Interstellar）的一个概念（Concept），存在 Interstellar <InstanceOf> American science fiction films的关系。另一方面，我们从词条标题抽取出标题属性的值，从文章第一段抽取出摘要属性的值。 所有信息框属性与属性值从信息框中提取出来。另外，通过抽取文本中的超链接，我们还获得了实例间的引用信息Li(a), 比如华纳兄弟（Warner Bros.） 
+%每个词条页面都包含分类关系、属性信息。以图xxx中，电影星际穿越（Interstellar）的词条页面为例，该词条所属的类别，以超链接标签的形式罗列在页面底部。我们认为这是该实例所具有的概念，即美国科幻片（American science fiction films）是星际穿越（Interstellar）的一个概念（Concept），存在 Interstellar <InstanceOf> American science fiction films的关系。另一方面，我们从词条标题抽取出标题属性的值，从文章第一段抽取出摘要属性的值。 所有信息框属性与属性值从信息框中提取出来。另外，通过抽取文本中的超链接，我们还获得了实例间的引用信息Li(a), 比如华纳兄弟（Warner Bros.）
 %
 %实例抽取过程中，我们收获了两种数据信息，分别是实例及其特征信息，包括Ti（a），ab（a），INfobox。。。。 以及上下位关系信息。
 %
@@ -122,7 +122,7 @@ XLore知识库融合中英文维基百科、百度百科与互动百科的信息
 为了语义关系的完整性，我们保留了剔除的语义关系，并为其定义了两种新关系，来表征数据的相关性：为实例－概念定义relatedClassOf关系，概念－概念定义了relatedTopicOf关系。
 
 \subsection{跨语言知识融合}
-            
+
 %为了提现跨语言特性，我们将来自四个百科中表示同一实体的概念、实例、属性合并成同一个，并用唯一id标识。以实例为例，我们遵循以下步骤合并实例：
 %\begin{itemize}
 %\item 1.  对于从中文维基百科抽取的实例，从百度百科与互动百科中，通过词条标题，找到表征同一实体的实例；
@@ -134,7 +134,7 @@ XLore知识库融合中英文维基百科、百度百科与互动百科的信息
 
 我们首先通过标签融合中文知识，将不同来源的同一实体合并，之后通过中英文跨语言链接，找出中英文中相同实体，用唯一URI标识。
 
-之后将数据转化成标准RDF，比如：以\textit{<http://xlore.org/instance/id>}类型的URI标识实体，使用\textit{owl:subClassOf}关系表征两个概念的关系。其中，跨语言的知识信息，如标签等，会通过@en与@zh区分成两类，形成两类知识信息；跨百科知识信息，如摘要、源URL等，会通过@enwiki, @zhwiki, @baidu, @hudong区分成四类。
+之后将数据转化成标准RDF，比如：以$\langle$\emph{http://xlore.org/instance/id}$\rangle$类型的URI标识实体，使用\textit{owl:subClassOf}关系表征两个概念的关系。其中，跨语言的知识信息，如标签等，会通过@en与@zh区分成两类，形成两类知识信息；跨百科知识信息，如摘要、源URL等，会通过@enwiki, @zhwiki, @baidu, @hudong区分成四类。
 
 \subsection{抽取结果与统计}
 本节给出XLore知识库的知识数量统计结果，其中表\ref{tab:extract-result}为从各百科中抽取的概念、属性、实例数量统计，表\ref{tab:xlore-result}为融合后最终知识库中知识数量。
@@ -147,9 +147,9 @@ XLore知识库融合中英文维基百科、百度百科与互动百科的信息
     \begin{tabularx}{\linewidth}{lXXXX}
         \toprule[1.5pt]
                & 英文维基    & 中文维基   & 互动百科    & 百度百科     \\ \midrule[1pt]
-        \#概念 & 982,432   & 159,705  & 31,802    & 1300      \\ 
-        \#实例 & 4,304,113 & 662,650  & 5,590,751 & 5,622,404 \\ 
-        \#属性 & 43,976    & 18,842   & 1187      & 139,634   \\ 
+        \#概念 & 982,432   & 159,705  & 31,802    & 1300      \\
+        \#实例 & 4,304,113 & 662,650  & 5,590,751 & 5,622,404 \\
+        \#属性 & 43,976    & 18,842   & 1187      & 139,634   \\
         \bottomrule[1.5pt]
     \end{tabularx}
   \end{minipage}
@@ -160,12 +160,12 @@ XLore知识库融合中英文维基百科、百度百科与互动百科的信息
   \begin{minipage}[t]{0.9\linewidth}
     \caption{XLore结果展示}
     \label{tab:xlore-result}
-    \begin{tabularx}{\linewidth}{lXXXXXX} 
+    \begin{tabularx}{\linewidth}{lXXXXXX}
         \toprule[1.5pt]
         \multicolumn{1}{c}{} & \multicolumn{2}{c}{概念}     & \multicolumn{2}{c}{实例}                   & \multicolumn{2}{c}{属性}    \\ \midrule[1pt]
-英文            & 639,020 & 96.26\%          & 3,879,121   & 38.79\%                & 15,380  & 27.24\%                \\ 
-中文            & 88,615  & 13.35\%          & 7,409,519   & 68.25\%                & 51,618  & 91.44\%                \\ 
-跨语言          & 63,895  & 9.63\%           & 432,598     & 3.98\%                 & 10,549  & 18.69\%                \\ 
+英文            & 639,020 & 96.26\%          & 3,879,121   & 38.79\%                & 15,380  & 27.24\%                \\
+中文            & 88,615  & 13.35\%          & 7,409,519   & 68.25\%                & 51,618  & 91.44\%                \\
+跨语言          & 63,895  & 9.63\%           & 432,598     & 3.98\%                 & 10,549  & 18.69\%                \\
 %English O       & 575,125 & 86.65\%                & 3,446,523           & 31.75\%                & 4,831   & 8.56\%    \\ \hline
 %Chinese O       & 24,720  & 3.72\%                 & 6,976,921           & 64,27\%                & 41,069  & 72.75\%   \\ \hline
 总数           & 663,740 & {-}               & 10,856,042  & {-}                    & 56,449  & {-} \\
@@ -181,7 +181,7 @@ XLore网站系统旨在对外显示我们的数据数量与语义关系，并向
 \subsection{XLore系统构建}
 图\ref{fig:xlore-architecture}为XLore系统架构图。
 
-\begin{figure}[H] 
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.9\columnwidth]{xlore-architecture}
   \caption{XLore系统架构图}
@@ -201,7 +201,7 @@ Web框架采用JSP＋Struts2.0搭建，运行在Tomcat7.0 Web服务器上。页�
 \subsection{XLore知识展示}
 图\ref{fig:xlore-home}为XLore网站首页。截止到2015年8月，我们的跨语言知识库中包含有663,740个概念、56,449个属性、10,856,042个实例。首页以表格的形式提供了顶层及其下两层的概念层及其统计数据，点击左边“＋”按钮可获得子概念样例。除此之外，首页列出了一些实例例子，点击可直接查看相应实例页面。
 
-\begin{figure}[H] 
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\columnwidth]{xlore-home}
   \caption{XLore网页系统首页}
@@ -212,10 +212,10 @@ Web框架采用JSP＋Struts2.0搭建，运行在Tomcat7.0 Web服务器上。页�
 
 XLore网站为三种知识提供展示，分别为概念、属性、实例。
 概念页面以绿色为主色调，显示了概念中英文标签、父概念、子概念、相关实例等信息。
-属性页面使用紫色色调，展示了中英文标签、属性类型（DateType与ObjectType）、相关实例、定义域(Domain)与值域(Range)等。 
+属性页面使用紫色色调，展示了中英文标签、属性类型（DateType与ObjectType）、相关实例、定义域(Domain)与值域(Range)等。
 实例页面色调为蓝色，展示了中英文标签、实例图像、所属概念、摘要、信息框（包括中英文信息），URL多种信息。三种页面中，涉及到的双语内容，我们以\textit{中文［英文］}的格式展示每条信息，如果网站语言为英文，则将英文展示在前，格式变为\textit{英文［中文］}。当涉及到四个百科内容且无法融合，我们利用网页标签分栏的形式分别展示不同百科信息，如图\ref{fig:xlore-page}。
 
-\begin{figure}[H] 
+\begin{figure}[H]
   \centering
   \includegraphics[width=1\columnwidth]{xlore-page}
   \caption{XLore实例、概念、属性页面展示}
@@ -226,7 +226,7 @@ XLore网站为三种知识提供展示，分别为概念、属性、实例。
 
 XLore提供了两个数据可视化展示，分别为概念上下位关系可视化与相关实例可视化，图\ref{fig:xlore-visualization}为可视化例子，图\ref{fig:xlore-visualization-instance}显示指定实例及其相关实例，以相关领域划分，直接相关实例（信息框中实例）距离近，间接相关实例（文本内链接实例）距离较远；图\ref{fig:xlore-visualization-concept}显示指定概念及其子概念(黄色)、父概念(绿色)。
 
-\begin{figure}[H] 
+\begin{figure}[H]
   \centering
   \begin{subfigure}{7.2cm}
     \includegraphics[height=5.4cm]{xlore-visualization-instance}
@@ -267,7 +267,7 @@ XLore提供搜索框文本查询与SPARQL语句查询两种查询方法。
 
 搜索框显示于每个页面的上方，输入要查询的中文或英文字符串，点击“搜索”或按Enter键，即获得模糊查询结果。用户可根据需求选择搜索概念还是实例，或者属性，默认情况下，系统会同时返回三类搜素结果，用户可通过切换标签查看。图\ref{fig:xlore-search-engine}为搜索结果页面展示。
 
-\begin{figure}[H] 
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.9\columnwidth]{xlore-search-engine}
   \caption{XLore文本搜索框与搜索结果展示}
@@ -276,7 +276,7 @@ XLore提供搜索框文本查询与SPARQL语句查询两种查询方法。
 
 另一方面，对于专业人士，我们提供SPARQL查询页面，如图\ref{fig:xlore-sparql-endpoint}所示，输入正确的sparql语句，返回结果中可看到我们对知识库schema的定义。另外，为了防止sql注入造成的攻击与数据库崩溃，我们采取了xxx的安全措施。
 
-\begin{figure}[H] 
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.9\columnwidth]{xlore-sparql-endpoint}
   \caption{XLore SPARQL 搜索框与搜索结果展示}
@@ -302,7 +302,7 @@ XLore实体链接接口提供了四种类型的查询：
 
 该接口框架如图\ref{fig:entity-linking-architecture}
 该接口以中英文名称或文本为输入，经过实体抽取、实体候选生成、实体排歧，确定与名称和上下文最匹配的实体，返回实体列表与中英文实体信息。
-\begin{figure}[H] 
+\begin{figure}[H]
   \centering
   \includegraphics[width=1\columnwidth]{entity-linking-architecture}
   \caption{XLore 实体链接接口框架图}
@@ -331,10 +331,9 @@ XLore实体链接接口提供了四种类型的查询：
 
 \begin{table}[htb]
   \centering
-  \caption 名称-实体关系对抽取数量统计
+  \caption{名称-实体关系对抽取数量统计}
   \label{tab:mention-entity}
-  \begin{minipage}[t]{0.8\textwidth} 
-    \begin{tabularx}{\linewidth}{lXXXX}
+    \begin{tabular}{ccccc}
       \toprule[1.5pt]
       {\heiti 类型} & {\heiti 英文维基} & {\heiti 中文维基} & {\heiti 百度百科} & {\heiti 互动百科} \\\midrule[1pt]
       标题 & 16.345,549 & 2,739,609 & 1 & 1 \\
@@ -343,8 +342,7 @@ XLore实体链接接口提供了四种类型的查询：
       重定向页面 & 2,759,377 & 362,767 & -  & - \\
       合并总对数 & 1 & 1 & 1 & 1 \\
       \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
+    \end{tabular}
 \end{table}
 
 抽取结果合并后，获得中英文名称－实体对应关系总数量为67,429,935对。我们只保留在XLore中能命中的实体，最终获得{\heiti 23,635,510}对关系。平均每个实体有1.97个名称，每个名称可能对应1.32个实体。
@@ -364,7 +362,7 @@ XLore实体链接接口提供了四种类型的查询：
 
 \item 2.  计算合作实体相关度($R_e$)：认为与文中其他实体有语义关系的实体更相关，提取根据文中其他名称$M'=$对应的实体候选$C(M') = $，与本名称的实体候选的相关实体，即文本中的链接实体$I(c_{i,j})$做交集。
 \begin{equation}
-{ R }_{ e }=\frac { \left| C\left( M' \right) \cap I\left( { c }_{ i,j } \right)  \right|  }{ \left| I\left( { c }_{ i,j } \right)  \right| +1 } 
+{ R }_{ e }=\frac { \left| C\left( M' \right) \cap I\left( { c }_{ i,j } \right)  \right|  }{ \left| I\left( { c }_{ i,j } \right)  \right| +1 }
 \end{equation}
 
 \item 3.  取两个相关度的最大值。
@@ -376,7 +374,7 @@ $R_{i,j}$ 即为实体候选$c_{i,j}$与名称$m_i$的相关度，$R_{i,j}$越�
 
 \subsection{实体链接接口的应用}
 该实体链接接口的学术领域名称查找功能，应用在Aminer学术搜索系统\footnote{https://aminer.org/}的学术知识展示模块上，如图\ref{fig:el-aminer}所示：用户在搜索学术领域词汇时，右边会显示该词汇对应的学术实体信息，及其相关上下文概念。
-\begin{figure}[H] 
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\columnwidth]{el-aminer}
   \caption{XLore实体链接接口在Aminer上的应用}
@@ -384,7 +382,7 @@ $R_{i,j}$ 即为实体候选$c_{i,j}$与名称$m_i$的相关度，$R_{i,j}$越�
 \end{figure}
 
 通用领域名称查找功能，应用在新闻分析系统NewsMiner\footnote{http://newsminer.net}上，分析新闻文本，提供实体信息。如图\ref{fig:el-newsminer}所示：
-\begin{figure}[H] 
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\columnwidth]{el-newsminer}
   \caption{XLore实体链接接口在NewsMiner上的应用}
