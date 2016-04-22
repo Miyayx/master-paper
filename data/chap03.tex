@@ -3,7 +3,7 @@
 
 \section{本章引论}
 
-本体构建中，Taxonomy作为骨架，占有重要地位。Taxonomy包含本体的概念与属性，属性为概念下一类实例的共有特性。
+知识库构建过程中，本体作为骨架，占有重要地位。本体对概念下的实例进行描述，包含一系列概念与属性，属性为概念下一类实例的共有特性。
 
 为了获取通用领域下概念与属性的关系，本章中，我们对维基百科进行了详细地观察与解析，获得了维基中模板与属性的规则。
 
@@ -48,20 +48,20 @@
   \caption{模板类型举例}
   \label{fig:template-examples}
 
-  \begin{subfigure}{3cm}
-    \includegraphics[height=3cm]{template-keyvalue}
+  \begin{subfigure}{4cm}
+    \includegraphics[height=4cm]{template-keyvalue}
     \caption{键值对模板示例}
   \end{subfigure}%
-  \hspace{4em}%
+  \hspace{0.01cm}%
 
-  \begin{subfigure}{3cm}
-    \includegraphics[height=3cm]{template-table}
+  \begin{subfigure}{4cm}
+    \includegraphics[height=4cm]{template-table}
     \caption{表格模板示例}
   \end{subfigure}%
-  \hspace{4em}%
+  \hspace{0.01cm}%
 
-  \begin{subfigure}{3cm}
-    \includegraphics[height=3cm]{template-inherit}
+  \begin{subfigure}{4cm}
+    \includegraphics[height=4cm]{template-inherit}
     \caption{继承模板示例}
   \end{subfigure}%
 \end{figure}
@@ -132,6 +132,7 @@
   \label{tab:wiki-infobox-statistic}
   \begin{minipage}[t]{1\textwidth} 
     \begin{tabularx}{\linewidth}{lXXX}
+        \toprule[1.5pt]
       {\heiti 维基百科} & {\heiti \#词条} &  {\heiti \#含有信息框词条} & {\heiti \#被使用模板} \\\midrule[1pt]
       英文维基 & 5,138,426 & 2,344,305(45.6\%) & 4491 \\
       中文维基 & 863,918   & 261,045(30.2\%)   & 2317  \\
@@ -148,6 +149,7 @@
   \label{tab:infobox-template}
   \begin{minipage}[t]{1\textwidth} 
     \begin{tabularx}{\linewidth}{lXXXXX}
+        \toprule[1.5pt]
       {\heiti 维基百科} & {\heiti \#$T_{kv}$} &  {\heiti \#$T_{table}$} & {\heiti \#$T_inherit$} & {\heiti \#$T_redirect$} & {\heiti 总数}\\\midrule[1pt]
       英文维基 & 1910 & 1901 & 1897 & 4076 & 9784\\
       中文维基 & 840  & 878  & 968  & 956  & 3642\\
@@ -164,6 +166,7 @@
   \label{tab:render-label}
   \begin{minipage}[t]{1\textwidth} 
     \begin{tabularx}{\linewidth}{lXXXX}
+        \toprule[1.5pt]
       {\heiti 维基百科} & {\heiti \#$T$} & {\heiti \#模板属性} & {\heiti 属性/模板}  &{\heiti 模板标签/属性} \\\midrule[1pt]
       英文维基 & 3819 & 104741 & 27.45 & 1.27  \\
       中文维基 & 1895 & 44797  & 23.64 & 1.34  \\
@@ -181,9 +184,55 @@
   \label{tab:coverage}
   \begin{minipage}[t]{1\textwidth} 
     \begin{tabularx}{\linewidth}{lXXX}
+      \toprule[1.5pt]
       {\heiti 维基百科} & {\heiti 模板覆盖率}  {\heiti 模板属性覆盖率}  & {\heiti 词条覆盖率} \\\midrule[1pt]
       英文维基 & 87.6\% & 27\% & 96.7\%  \\
       中文维基 & 77.8\% & 33\% & 90.3\%  \\
+      \bottomrule[1.5pt]
+    \end{tabularx}
+  \end{minipage}
+\end{table}
+
+\ref{tab:template-examples}给出了常用模板举例，\ref{tab:template-property-examples}给出了三个常用中文模板的部分属性举例。
+
+\begin{table}[htb]
+  \centering
+  \caption{常用模板统计}
+  \label{tab:template-examples}
+  \begin{minipage}[t]{1\textwidth} 
+    \begin{tabularx}{\linewidth}{XXXX}
+      \toprule[1.5pt]
+        \multicolumn{2}{c}{英文维基}   & \multicolumn{2}{c}{中文维基} \\ \midrule[1pt]
+       Infobox settlement   & 253276 & Infobox Settlement & 34717 \\
+       Infobox person       & 158481 & 艺人 & 14047 \\
+       Infobox football biography & 127402 & Infobox Planet& 12163 \\
+       Infobox film         & 102863 & 文物保护单位& 10362 \\
+       Infobox officeholder & 86698 & Infobox officeholder& 7501\\
+       Infobox album        & 77436 & Infobox French commune& 7297\\
+       Infobox musical artist & 74469 & 电影信息框& 6787 \\
+       Infobox company      & 46646 & Infobox person& 6414 \\
+       Infobox NRHP         & 42385 & 电视节目信息框& 5958\\
+       Infobox single       & 40578 & Infobox Company& 5138 \\
+      \bottomrule[1.5pt]
+    \end{tabularx}
+  \end{minipage}
+\end{table}
+
+\begin{table}[htb]
+  \centering
+  \caption{常用模板属性举例}
+  \label{tab:template-property-examples}
+  \begin{minipage}[t]{1\textwidth} 
+    \begin{tabularx}{\linewidth}{XXXXXX}
+      \toprule[1.5pt]
+        \multicolumn{2}{c}{艺人}  & \multicolumn{2}{c}{Planet} & \multicolumn{2}{c}{电影信息框}\\ \midrule[1pt]
+        模板& 显示 & 模板& 显示& 模板& 显示\\
+        Alias & 昵称      & discovered & 发现日期      & budget & 预算 \\
+        hometown& 籍贯    & discoverer & 发现者        & director & 导演\\
+        URL& 网站         & density & 平均[[密度]]     & producer& 监制 \\
+        child& 儿女       & mass & [[质量]]            & writer & 编剧\\
+        children& 儿女    & inclination & [[轨道倾角]] & starring & 主演\\
+        country & 国籍    & named\_after& 命名依据     & music &  配乐作曲\\
       \bottomrule[1.5pt]
     \end{tabularx}
   \end{minipage}
