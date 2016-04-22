@@ -336,18 +336,18 @@ XLore实体链接接口提供了四种类型的查询：
   \begin{minipage}[t]{0.8\textwidth} 
     \begin{tabularx}{\linewidth}{lXXXX}
       \toprule[1.5pt]
-      {\heiti } & {\heiti 英文维基} & {\heiti 中文维基} & {\heiti 百度百科} & {\heiti 互动百科} \\\midrule[1pt]
-      标题 &  & 2,739,609 & 1 & 1 \\
-      内链接 &  & 1 & 1 & 1 \\
-      消歧页面 & 1 & 1 & 174,862 & 24,158 \\
-      重定向页面 & 1 & 1 & -  & - \\
+      {\heiti 类型} & {\heiti 英文维基} & {\heiti 中文维基} & {\heiti 百度百科} & {\heiti 互动百科} \\\midrule[1pt]
+      标题 & 16.345,549 & 2,739,609 & 1 & 1 \\
+      内链接 & 45,650,452 & 6,784,030 & 1 & 1 \\
+      消歧页面 & 1 & 2550 & 174,862 & 24,158 \\
+      重定向页面 & 2,759,377 & 362,767 & -  & - \\
       合并总对数 & 1 & 1 & 1 & 1 \\
       \bottomrule[1.5pt]
     \end{tabularx}
   \end{minipage}
 \end{table}
 
-抽取结果合并后，获得中英文名称－实体对应关系总数量为67,429,935对。我们只保留在XLore中能命中的实体，最终获得23,635,510对关系。平均每个实体有1.97个名称，每个名称可能对应1.32个实体。
+抽取结果合并后，获得中英文名称－实体对应关系总数量为67,429,935对。我们只保留在XLore中能命中的实体，最终获得{\heiti 23,635,510}对关系。平均每个实体有1.97个名称，每个名称可能对应1.32个实体。
 %17845907个mention， 11987986个entity
 
 在抽取过程中，我们对名称－实体的出现频数进行了记录，用于之后的排歧工作。以\textit{名称 \ 实体知识库uri \ 出现频数}为格式存储数据，并以名称为索引，将数据导入到MySQL数据库中，便于查询。
@@ -366,6 +366,7 @@ XLore实体链接接口提供了四种类型的查询：
 \begin{equation}
 { R }_{ e }=\frac { \left| C\left( M' \right) \cap I\left( { c }_{ i,j } \right)  \right|  }{ \left| I\left( { c }_{ i,j } \right)  \right| +1 } 
 \end{equation}
+
 \item 3.  取两个相关度的最大值。
 \begin{equation}
 R = \max{ \left(R_a, R_e \right)}
