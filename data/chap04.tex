@@ -124,21 +124,25 @@ x_{k,j} =
 \end{align}
 
 \subsubsection{结果}
-给出两个典型概念下的前10个属性
+\ref{tab:baidu-template-examples}给出两个典型概念下属性集合:
 
 \begin{table}[htb]
   \centering
-  \caption{百度百科概念模板生成结果举例}
+  \caption{百度百科概念模板生成结果举例(前20)}
   \label{tab:baidu-template-examples}
     \begin{tabular}{cccc}
       \toprule[1.5pt]
-         {Planet} & {电影信息框}\\ \midrule[1pt]
-         discovered & 发现日期      & budget & 预算 \\
-         discoverer & 发现者        & director & 导演\\
-         density & 平均[[密度]]     & producer& 监制 \\
-         mass & [[质量]]            & writer & 编剧\\
-         inclination & [[轨道倾角]] & starring & 主演\\
-         named\_after& 命名依据     & music &  配乐作曲\\
+         \multicolumn{2}{c}{Planet} & \multicolumn{2}{c}{电影信息框}\\ \midrule[1pt]
+         发现者   &  自转周期  & 导演     & 其他译名 \\
+         发现时间 &  离心率    & 制片地区 & 外文名   \\
+         中文名   &  绝对星等  & 片长     & 出品时间 \\
+         质量     &  反照率    & 主演     & 出品公司 \\
+         公转周期 &  平近点角  & 上映时间 & imdb编码 \\
+         分类     &  别称      & 对白语言 & 制片人   \\
+         直径     &  半长轴    & 类型     & 分级     \\
+         外文名   &  平均密度  & 编剧     & 发行公司 \\
+         发现日期 &  表面温度  & 色彩     & 拍摄日期 \\
+         倾倒斜角 &  天体名称  & 中文名   & 拍摄地点 \\
       \bottomrule[1.5pt]
     \end{tabular}
 \end{table}
@@ -253,15 +257,17 @@ x_{k,j} =
     \end{tabular}
 \end{table}
 
-在最终的跨语言属性种子集合生成结果中，我们以{\heiti 模板:属性标签}表征一个属性，即属性带有领域信息。我们还发现，对于一个属性，可能有一义多词的现象出现。最终结果统计见表\ref{tab:cross-lingual-seed}。
+在最终的跨语言属性种子集合生成结果中，我们以{\heiti 模板:属性标签}表征一个属性，即属性带有概念信息。
+%我们还发现，对于一个属性，可能有一义多词的现象出现。
+最终结果统计见表\ref{tab:cross-lingual-seed}，表\ref{tab:cross-lingual-seed-examples}给出了对齐示例。
 
 \begin{table}[htb]
   \centering
-  \caption{跨语言属性初步对齐结果}
+  \caption{跨语言属性对齐种子集合结果}
   \label{tab:cross-lingual-seed}
     \begin{tabular}{ccc}\toprule[1.5pt]
-      {\heiti 对齐数量} & {\heiti 英文模板数量} &  {\heiti 一对多属性数量} \\\midrule[1pt]
-      1 & 1 & 1  \\
+      {\heiti 对齐数量} & {\heiti 概念数量} \\\midrule[1pt]
+      2262 & 235  \\
       \bottomrule[1.5pt]
     \end{tabular}
 \end{table}
@@ -294,18 +300,19 @@ x_{k,j} =
 对齐是一对一匹配的精准工作，为了让结果可精确且可度量，我们将跨语言属性对齐设计成二分类任务，即“对齐”返回1，“非对齐”返回0，并采用逻辑斯谛回归模型进行训练与预测。
 
 \subsubsection{特征选择}
-特征选用三类特征：基于文本特征、基于语义特征、基于分布特征。
+特征选用三类特征：基于文本特征、基于结构特征、基于分布特征。
 
 {\heiti 基于文本特征} 我们对两部分文本进行计算，分别为属性标签和属性值。针对语言的差异，我们利用百度翻译API\footnote{http://fanyi.baidu.com/}，获得属性标签中译英、英译中两类翻译结果，与属性值英译中翻译结果。文本相似度多采用编辑距离(EditDistance)计算，编辑距离相似度被定义为:
 \begin{equation}
-edit\_distance\_sim(s_1, s_2) = \frac{edit\_distance(s_1, s_2))}{max(\left| s_1 \right |,\left | s_2 \right |))}
+ed\_sim(s_1, s_2) = \frac{edit\_distance(s_1, s_2))}{max(\left| s_1 \right |,\left | s_2 \right |))}
 \end{equation}
 
 标签相似度：对中英文属性的标签进行计算，转换成同语言后，分别进行中文相似度计算与英文相似度计算，取最大值作为特征值。
 \begin{equation}
 \label{}
-sim_{label}(sp_e, sp_z) = max(ed\_sim(label(p_e), translate(label(p_z)), ed\_sim(translate(label(p_e)), label(p_z)))
+sim_{label}(sp_e, sp_z) = max(ed\_sim(label(p_e), label'(p_z)), ed\_sim(label'(p_e), label'(p_z)))
 \end{equation}
+其中$label'$为属性标签对应的翻译字符串。
 
 属性值相似度：属性值是衡量两个属性是否对齐的最直接指标，如果两个属性在同一篇词条下具有相同属性值，它们匹配的可能性就很大。根据属性值的内容，我们将其分为三类，分别为文章型、数字型、纯文本型，每一种类型，采用不同的相似度计算策略。
 
@@ -339,13 +346,13 @@ sim_{number\_v}(sp_e, sp_z) =
 sim_{literal\_v}(sp_e, sp_z) =
 \end{equation}
 
-为了减小计算复杂度并提高准确度，属性值最好在精炼且可能性大的候选集中计算。因此我们将属性值相似度的计算粒度设定为单个文章，即只与对齐文章信息框内的属性值进行比对。属性值类型的判定。。。
+为了减小计算复杂度并提高准确度，属性值最好在精炼且可能性大的候选集中计算。因此我们将属性值相似度的计算粒度设定为单个文章，即只与对齐文章信息框内的属性值进行比对。
 
-\begin{equation}
-\end{equation}
+%\begin{equation}
+%\end{equation}
 
-{\heiti 基于语义特征}
-当前大部分跨领域的知识库都以在线百科为数据源而建立。百科内部本身就存在着一些语义关系，比如子分类和父分类间的\textit{subClassOf}关系、词条实体与分类之间的\textit{instanceOf}关系。语义信息常被用来抽取特征［老大的论文］，表示实例等在结构上的特点。我们利用百科里现有的语义关系，抽取出两个特征，分别为文章相似度与概念相似度。
+{\heiti 基于结构特征}
+当前大部分跨领域的知识库都以在线百科为数据源而建立。百科内部本身就存在着一些语义关系，比如子分类和父分类间的\textit{subClassOf}关系、词条实体与分类之间的\textit{instanceOf}关系。语义信息常被用来抽取特征\cite{wang2014cross}，表示实例等在结构上的特点。我们利用百科里现有的语义关系，抽取出两个特征，分别为文章相似度与概念相似度。
 
 文章相似度即计算使用两属性词条的交集，定义为：\ref{}，概念相似度即计算两属性领域的相似程度。
 
@@ -387,38 +394,50 @@ F1-Measure = \frac { 2PR }{ P+R }
   \label{tab:property-matching-result}
     \begin{tabular}{cccc}\toprule[1.5pt]
       {\heiti 方法} & {\heiti 准确率} &  {\heiti 召回率} & {\heiti F1值}  \\ \midrule[1pt]
-      跨语言属性对齐 & 83\% & 50\% & 1  \\
+      跨语言属性对齐 & 83.4\% & 52.6\% & 64.5\% \\
       \bottomrule[1.5pt]
     \end{tabular}
 \end{table}
 
-\begin{table}[htb]
-  \centering
-  \caption{跨语言属性对齐结果举例}
-  \label{tab:cross-lingual-seed}
-    \begin{tabular}{ccc}
-      \toprule[1.5pt]
-      {\heiti 对齐数量} & {\heiti 英文模板数量} &  {\heiti 一对多属性数量} \\\midrule[1pt]
-      1 & 1 & 1  \\
-      \bottomrule[1.5pt]
-    \end{tabular}
-\end{table}
-
-此外，对不同特征做出的贡献，我们也在表\ref{tab:feature-compare}中给出了对比：
-
-\begin{table}[htb]
-  \centering
-  \caption{特征组合对结果的影响}
-  \label{tab:feature-compare}
-    \begin{tabular}{cccc}\toprule[1.5pt]
-      {\heiti 特征组合} & {\heiti 准确率} &  {\heiti 召回率} & {\heiti F1值}  \\ \midrule[1pt]
-       & 83\% & 50\% & 1  \\
-       & 83\% & 50\% & 1  \\
-       & 83\% & 50\% & 1  \\
-       & 83\% & 50\% & 1  \\
-      \bottomrule[1.5pt]
-    \end{tabular}
-\end{table}
+%\begin{table}[htb]
+%  \centering
+%  \caption{跨语言属性对齐方法结果举例}
+%  \label{tab:property-matching-examples}
+%    \begin{tabular}{ccc}\toprule[1.5pt]
+%      {\heiti 概念} & {\heiti 英文属性} &  {\heiti 中文属性} \\\midrule[1pt]
+%      \multirow{5}{*}{电影} 
+%      & Box office    & 累计票房/全球票房/票房  \\
+%      & Budget        & 制片成本/预算/电影投资  \\
+%      & Directed by   & 导演/编剧  \\
+%      & Distributed by & 出品公司/发行商/发行方/发行公司  \\
+%      & Release dates & 上映日期/上映/首映日期/上映时间/播放期间  \\ 
+%      \midrule[1.0pt]
+%      \multirow{5}{*}{大学} 
+%      & Active       & 创建时间/建立时间/创办时间/办学时间  \\
+%      & Affiliations & 主管部门  \\
+%      & Former names & 老校名  \\
+%      & Location     & 所属地区/地址/校址/学校地址  \\
+%      & President    & 院长/董事长/现任校长/现任院长 \\
+%      \bottomrule[1.5pt]
+%    \end{tabular}
+%\end{table}
+%
+%
+%此外，对不同特征做出的贡献，我们也在表\ref{tab:feature-compare}中给出了对比：
+%
+%\begin{table}[htb]
+%  \centering
+%  \caption{特征组合对结果的影响}
+%  \label{tab:feature-compare}
+%    \begin{tabular}{cccc}\toprule[1.5pt]
+%      {\heiti 特征组合} & {\heiti 准确率} &  {\heiti 召回率} & {\heiti F1值}  \\ \midrule[1pt]
+%       $sim_{label}$& 83\%       & 50\% & 1  \\
+%       $sim_{label}$+sim_{value} & 83\% & 50\% & 1  \\
+%       $sim_{label}$+sim_{value} & 83\% & 50\% & 1  \\
+%       $sim_{label}$+sim_{value}+sim_{popular}& 83\% & 50\% & 1  \\
+%      \bottomrule[1.5pt]
+%    \end{tabular}
+%\end{table}
 
 
 \section{本章小结}
