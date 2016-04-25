@@ -2,7 +2,7 @@
 \label{cha:property-matching}
 
 \section{本章引论}
-维基百科是全球最大的百科数据库，目前支持228个语言。因语言差异、地域区别等多种原因，英文维基词条与信息框数量远超其他语言，信息量很不对称。仅拿中英文来说，如图\ref{fig:en-zh-article-infobox-compare}所示，截止到2016年2月，英文维基词条约是中文维基的6倍，信息框差异更大，为是9倍。
+维基百科是全球最大的百科数据库，目前支持228个语言。因语言差异、地域区别等多种原因，英文维基词条与信息框数量远超其他语言，信息量很不对称。仅以中英文维基为例，如图\ref{fig:en-zh-article-infobox-compare}所示，截止到2016年2月，英文维基词条约是中文维基的6倍，包含信息框的词条数更是高达9倍。中英文维基数据，尤其在信息框数据，的严重不平衡性，使得基于维基百科构建的中英文知识库缺少足够的属性链接。
 
 \begin{figure}[h]
   \centering
@@ -11,13 +11,11 @@
   \label{fig:en-zh-article-infobox-compare}
 \end{figure}
 
-维基百科中中英文数据的不平衡，尤其在信息框上差距更加显著，使得基于维基百科构建的中英文知识库缺少足够的属性链接。
+%维基百科中中英文数据的不平衡，尤其在信息框上差距更加显著，使得基于维基百科构建的中英文知识库缺少足够的属性链接。
 
-而百度百科作为中国活跃的开放式网络百科之一，参与人数众多，信息更为全面。截止到2014年12月含有信息框的词条数量达到xxx。
+而百度百科作为中国活跃的开放式网络百科之一，参与人数众多，信息较为全面。截止到2014年12月含有信息框的词条数量达到xxx。图\ref{fig:frozen-infobox}对比了中英文维基和百度百科中电影《冰雪奇缘》的信息框内容，可以发现三个百科信息各有异同，能够互相补充。如果能充分利用它们之间的关系，比如通过百度百科的信息框补全中文维基信息框、利用中文维基与英文维基的对齐关系找到英文维基与百度百科的对齐关系等，就可以进一步促进知识补全，实现中英文知识融合。
 
-图\ref{fig:frozen-infobox}表明三个百科中的信息各有异同，如果能充分利用三个百科之间的关系，比如通过百度百科的信息框补全中文维基信息框、利用中文维基与英文维基的对齐关系找到英文维基与百度百科的对齐关系等，就可以进一步促进知识补全，实现中英文知识融合。
-
-本章从抽取更多跨语言知识，融合异构百科的角度出发，引入具有丰富中文信息的在线百科，将工作定位于寻找百度百科与英文维基百科的中英文属性对齐关系。这是一个跨语言、跨异构百科的任务，就我们所知，当前还没有自动抽取百度百科属性信息，并与维基百科知识对齐的工作。
+本章从抽取更多跨语言知识，融合异构百科的角度出发，引入具有丰富中文信息的在线百科，发现百度百科与英文维基百科的中英文属性对齐关系。这是一个跨语言、跨异构百科的任务，就我们所知，当前还没有自动抽取百度百科属性信息，并与维基百科知识对齐的工作。
 
 我们的工作面临跨语言与跨异构百科两项挑战，对于前者，因为维基百科与百度百科相互独立，在词条、分类乃至信息框属性方面，并没有直接的跨语言链接，如果能增加两者的关联信息，跨语言对齐的研究将会更加得心应手。对于后者，编辑规则的迥异，给同语言的对齐工作也带来障碍。本章根据维基百科与百度百科的异同，提出跨语言属性对齐框架，力图获得中文同语言的同义关系与跨语言的对齐关系。
 
@@ -34,9 +32,11 @@
 
 我们引入第\ref{cha:concept-property}章中的{\heiti 概念模板}，认为属性在特定概念下的含义是唯一的，同时将对属性的分析限制在概念领域范围内，属性的同义词查找、跨语言链接等，都在同一领域里进行。为此，首先需要确定一个概念$c \in C$，并生成该概念下的属性集合（模板）$P(c)=\{p_1,...p_n\}$。
 其中每个概念$c$下都包含一组词条$A(c)$，$p_c$只能描述$c$的词条，对一个指定的属性$p_c$，其所描述的词条集合为$A(p_c)$，$A(p_c) \subseteq A(c)$。此外，对于每个带有属性$p_c$的词条$a(p_c) \in A(p_c)$，都有一个对应属性值$a(p_c).v$。
-本章问题可定义为：
 
+基于上述概念，跨语言信息框属性对齐问题可定义为：
+\begin{definition}
 给定对应的中英文领域$c_e \in C_E \leftrightarrow c_z \in C_Z$，找到其中的跨语言对齐属性对$p_{c_e} \leftrightarrow p_{c_z}$。
+\end{definition}
 
 \section{异构百科的模板与属性分析}
 \label{sec:template-property-analysis}
@@ -45,13 +45,13 @@
 
 各个百科鼓励编辑者使用模板对词条进行组织与编辑。信息框的编辑也由模板来规范，比如百度百科中，描述人物使用\textit{人物通用模板}；维基百科中，电影使用\textit{Template:电影信息框}。与此同时，用户在模板信息项之外，可自行添加自定义属性，丰富信息框内容，使其个性化。
 
-利用模板信息，我们可以获得大量的属性集合以及属性与概念领域的对照关系。理想情况下，只要能找到跨语言下的异构百科中模板的对应关系，就能获得相关的属性的对齐关系，达到跨语言、跨领域属性对齐的目标。但是实际上，这个过程存在诸多阻碍：
+利用模板信息，我们可以获得大量的属性集合以及属性与概念领域的对照关系。理想情况下，只要能找到跨语言下的异构百科中模板的对应关系，就能获得相关的属性的对齐关系，达到跨语言、跨百科属性对齐的目标。但是实际上，这个过程存在诸多阻碍：
 \begin{itemize}
-\item {\heiti 百度百科模板无法获取。} 百度百科数据用于商业用途，没有像维基百科一样公开数据，因此其数据的获取多来源于网络爬虫。虽然网页涵盖了词条的几乎所有内容，但并不包含编辑信息，比如模板的使用。因此我们只能获得百度百科的属性集合，并依赖进一步的研究方法，猜测模板内容。
-\item {\heiti 异构百科定义的模式不同。} 姑且不说中英文差异，单是中文维基与百度百科，在对同一概念下词条的描述，命名规范与侧重点都不尽相同。以完成度较高的电影领域模板为例，图\ref{fig:frozen-infobox}中可以看到，中文维基使用\textit{制片商}，百度百科使用\textit{出品公司}作为电影制作公司属性的标签，可见{\heiti 属性多义性}。另一方面中文维基常有\textit{旁白}、\textit{配乐作品}等百度百科不使用的属性，百度百科常有\textit{imdb编码}等维基模板中没有的属性，可见{\heiti 模板缺失性}。若想尽可能保留属性集合的完整度，保证准确度，我们需要处理属性多义与模板缺失问题。
+\item {\heiti 百度百科模板无法获取。} 百度百科数据用于商业用途，没有像维基百科一样公开数据，因此其数据的获取多来源于网络爬虫。虽然网页涵盖了词条的几乎所有内容，但并不包含编辑信息，比如模板的使用。因此我们只能获得百度百科的属性集合，并依赖进一步的研究分析，猜测模板内容。
+\item {\heiti 异构百科定义的模式不同。} 姑且不说中英文差异，单是中文维基与百度百科，在对同一概念下词条的描述，命名规范与侧重点都不尽相同。以电影领域模板为例，图\ref{fig:frozen-infobox}中可以看到，中文维基使用\textit{制片商}，百度百科使用\textit{出品公司}作为电影制作公司属性的标签，可见{\heiti 属性多义性}。另一方面中文维基包含\textit{旁白}、\textit{配乐作品}等百度百科不使用的属性，百度百科包含\textit{imdb编码}等维基模板中没有的属性，可见{\heiti 模板缺失性}。若想尽可能保留属性集合的完整度，保证准确度，我们需要处理属性多义与模板缺失问题。
 \end{itemize}
 
-模板的差异，为属性对齐工作带来了更多的困难，但这也表明异构百科下属性的使用，确实有值得探究之处。我们可以通过寻找同一种属性在异构百科下的不同表达方式，寻找相似属性名称；融合多个百科的属性集合，获得概念下更全面的属性集合，制成通用模板。
+模板的差异，为属性对齐工作带来了更多的困难，但这也表明异构百科下属性的使用，确实有值得探究之处。我们可以通过寻找同一种属性在异构百科下的不同表达方式，寻找相似属性名称；融合多个百科的属性集合，获得概念下更全面的属性集合，生成通用模板。
 
 \section{基于异构百科的跨语言属性对齐}
 \label{sec:property-matching}
@@ -62,20 +62,20 @@
 
 图\ref{fig:property-matching}为整个跨语言属性对齐的框架图，根据前文所提出的问题，主要分为概念属性生成、同语言属性对齐与相似属性合并、跨语言种子集合生成、跨语言属性对齐四大模块。
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\columnwidth]{property-matching}
+  \includegraphics[width=0.78\columnwidth]{property-matching}
   \caption{跨语言属性对齐框架图}
   \label{fig:property-matching}
 \end{figure}
 
-本章数据基于第\ref{cha:concept-property}章中的结果数据，以及从2014年12月版本的百度百科网页上获取的信息。不同于维基百科复杂的概念属性抽取，百度百科页面不含模板信息，通过网页解析即可获得属性信息，在此不做赘述。
+本章数据基于第\ref{cha:concept-property}章中的结果数据，以及从2014年12月版本的百度百科网页上获取的信息。不同于维基百科复杂的概念属性抽取，百度百科页面不含模板信息，属性信息只能通过网页解析获得，具体过程不再赘述。
 
-{\heiti 百度百科概念模板生成：}针对百度百科没有信息框模板这一问题，我们根据属性词频与共现率，提出概念属性生成模型，旨在对给出的维基概念，在百度百科数据中模拟出对应的概念与概念属性集合，进而形成模板。概念属性集合，可作为今后编写信息框的参照，同时可看作属性对齐的候选集，大大减小了计算空间。
+{\heiti 百度百科概念模板生成：}针对百度百科没有信息框模板的问题，我们根据属性词频与共现率，提出概念属性生成模型，旨在对给出的维基概念，在百度百科中模拟出对应的概念与概念属性集合，进而形成模板。概念属性集合，可作为今后编写信息框的参照，同时可看作属性对齐的候选集，大大减小了计算空间。
 
 {\heiti 同语言属性对齐与相似属性合并：}针对属性的一义多词问题，即描述相同意义的属性，有不同的显示标签。
 %我们从文本相似度、语义形似度等角度出发，计算获得特定属性的同义属性。
-我们通过对齐中文维基与百度百科属性，找出高质量的属性同义词，这对提高跨语言对齐的召回率有帮助。
+我们通过对齐中文维基与百度百科属性，找出高质量的属性同义词，有助于提高跨语言对齐的召回率。
 
 {\heiti 跨语言种子集合：}维基百科与百度百科这两个异构百科没有直接的关联关系，但以中文维基为桥梁，并利用维基的跨语言特性，我们找到百度百科与中英文维基百科的联系，抽取出一部分高准确度的属性对齐关系。
 %信息框属性在维基百科中，不像分类与词条一样含有显性的语言链接，不能直接获取，但我们依然可以通过信息框模板与词条链接等现有关系，抽取出正确的属性跨语言对齐关系。
@@ -85,22 +85,22 @@
 
 \subsection{百度百科概念模板生成}
 \label{sec:domain-template}
-根据模板的定义，我们提出如下假设：给定一个概念领域，在其中使用频率高，或在其他领域极少出现的属性，即为该领域的属性。该思想与TF-IDF(Term Frequency–Inverse Document Frequency)的思想相近，属性的TF-IDF这个属性在某一概念的重要程度。
+根据模板的定义，我们假设一个概念领域中使用频率高且在其他领域极少出现的属性为该领域的代表属性。该思想与TF-IDF(Term Frequency–Inverse Document Frequency)相近，属性的TF-IDF表征其对于某一概念的重要程度。
 
-如何圈定一个概念及其相关信息？在第\ref{cha:concept-property}章中，我们认为模板规范着一类文档的写作，关联着一个概念领域，即$T \approx C$。第\ref{cha:concept-property}章中抽取的信息框模板覆盖了90\%的维基文档，可以认为涵盖了百科中的大部分领域。由于英文维基的模板已知，当前的任务可以定义为：给定来自英文维基的概念$C_E$，在百度百科$W_b$中抽象出与其对应的中文概念$C_Z$，及其属性集合$P(C_Z)={p_1^z,...,p_n^z}$。其中，不同于$C_E$由明确的模板组成，$W_b$中的$C_Z$是一个抽象存在，可以认为$P(C_Z)$就代表着$C_Z$中实例的特性，组成概念领域$C_Z$的模板。
+如何界定一个概念及其相关信息？在第\ref{cha:concept-property}章中，我们认为模板规范着一类词条的编辑，关联着一个概念领域，即$T \approx C$。第\ref{cha:concept-property} 章中抽取的信息框模板覆盖了90\%的维基文档，可以认为涵盖了百科中的大部分领域。由于英文维基的模板已知，当前的任务可以定义为：给定来自英文维基的概念$C_E$，在百度百科$W_b$中抽象出与其对应的中文概念$C_Z$，及其属性集合$P(C_Z)={p_1^z,...,p_n^z}$。其中，不同于$C_E$由明确的模板组成，$W_b$中的$C_Z$是一个抽象存在，可以认为$P(C_Z)$就代表着$C_Z$中实例的特性，组成概念领域$C_Z$的模板。
 
 哪些属性可以涵盖在$C_Z$内？我们首先获取$P(C_Z)$的候选集。根据百科的结构，可以通过直接关联找到关系密切的属性，并利用间接关系扩展属性候选：
 
-{\heiti 直接关联} $C_E$中的词条$A(C_E)$对应的跨语言词条集合$A_Z$使用的属性，认为是与$C_E$直接关联的属性，定义为$p_{direct}$；
+{\heiti 直接关联：} $C_E$中的词条$A(C_E)$对应的跨语言词条集合$A_Z$使用的属性，认为是与$C_E$直接关联的属性，定义为$p_{direct}$；
 
-{\heiti 间接关联} $C_E$中的词条$A(C_E)$涉及的分类$Ca(C_E)$对应的跨语言分类集合$Ca_Z$下，对应词条$A_Z'$使用的属性，认为是与$C_E$间接关联的属性，定义为$p_{indirect}$。考虑到维基分类体系的不完善，可能引入不相关的分类导致其他领域的词条混入，我们对$Ca$进行了筛选，具体来说：
+{\heiti 间接关联：} $C_E$中的词条$A(C_E)$涉及的分类$Ca(C_E)$对应的跨语言分类集合$Ca_Z$下，对应词条$A_Z'$使用的属性，认为是与$C_E$间接关联的属性，定义为$p_{indirect}$。考虑到维基分类体系的不完善，可能引入不相关的分类导致其他领域的词条混入，我们对$Ca$进行了筛选，具体来说：
 
 \begin{equation}
-Ca(C_E) = Top_k\{ ca_i |A(c_i)| > 2 \} 
+Ca(C_E) = Top_k\{ ca_i\mid |A(ca_i)| > 2 \}
 \end{equation}
 即$Ca$必须含有2个以上的词条，且只取包含词条数量最多的前$k(k=10)$个分类。
 
-则有：
+接下来，我们通过计算属性的TF-IDF来度量其对给定概念的标识度，即：
 \begin{align}
 \label{equ:tf}
 tf_{i,j}=\frac{n_{i,j}}{\sum_{k}{n_{k,j}}}
@@ -111,7 +111,7 @@ idf_{i}=1+log\frac{\left | D \right |}{\left | j:t_i  \epsilon d_j \right |}
 \end{align}
 \begin{align}
 \label{equ:tfidf}
-ifidf_{i,j}=tf_{i,j}\times idf_{i}
+tfidf_{i,j}=tf_{i,j}\times idf_{i}
 \end{align}
 
 \ref{equ:tf}中$n_{i,j}$是属性在领域$d_{j}$中的使用频次，分母则是在领域$d_{j}$中全部属性的使用次数之和。对属性频次的计算，因为直接关联属性比间接关联属性更重要，权值应更高，因此
@@ -129,8 +129,8 @@ x_{k,j} =
 \end{matrix}\right.
 \end{align}
 
-\subsubsection{结果}
-\ref{tab:baidu-template-examples}给出两个典型概念下属性集合:
+%\subsubsection{结果}
+表\ref{tab:baidu-template-examples}给出两个典型概念下属性集合。
 
 \begin{table}[htb]
   \centering
@@ -157,18 +157,15 @@ x_{k,j} =
 \subsection{同语言对齐与相似属性合并}
 \label{sec:similar-property}
 
-维基的中英文链接关系是珍贵的跨语言信息，我们打算以中文维基为桥梁，实现英文维基与异构百科的关联，首先要尽可能找出同语言下的属性关系。
-
-本小节通过对中文维基与百度百科的信息框属性分析，解决两个问题：1. 同语言属性对齐  2.相似属性查找。
+以中文维基为桥梁实现英文维基与异构百科的关联的首要任务是尽可能找出同语言下的属性关系。本小节通过对中文维基与百度百科的信息框属性分析，解决1）同语言属性对齐和2）相似属性查找两个问题。
 
 同语言属性对齐基于多策略提取，具体来说：
-\begin{enumerate}[策略1]
+\begin{enumerate}%[策略1]
 \item {\heiti 基于属性名称：}   描述同一实体的两个百科词条中，如果信息框属性名称一致，认为是同一属性；
 \item {\heiti 基于相同属性值：} 描述同一实体的两个百科词条中，如果信息框属性名称有相同字符，且属性值相同，则认为是同一属性；
 \item {\heiti 基于相似属性值：} 描述同一实体的两个百科词条中，如果信息框属性属性值相似，则认为是同一属性。为保证准确性，我们添加置信度衡量标准，即相似出现频率超过$N$次($N=5$)。
 \end{enumerate}
-
-抽取结果见表\ref{tab:zhwiki-baidu-cross-lingual}。
+表\ref{tab:zhwiki-baidu-cross-lingual}给出了不同策略的对齐数量和对齐属性举例。
 
 \begin{table}[htb]
   \centering
@@ -184,16 +181,13 @@ x_{k,j} =
     \end{tabular}
 \end{table}
 
-
-因为个人编写习惯，百科监管不严格等问题，属性可能有多种表达方式。我们在对齐结果中，发现中文维基一个属性可能对应多个百度属性标签，比如电影概念下，\textit{剪辑}有\textit{剪辑}，\textit{剪辑导演}，\textit{剪接}等表示方法，验证了这一现象的普遍性。
+因为个人编写习惯，百科监管不严格等问题，属性可能有多种表达方式。我们在对齐结果中，发现中文维基一个属性可能对应多个百度属性标签，比如电影概念下，\textit{剪辑}有\textit{剪辑}，\textit{剪辑导演}，\textit{剪接}等不同表示方法。
 
 如果一个属性有多个表示方法，应该将其视为一个属性。我们将代表相同含义但不同标签的属性合并成一个超属性$sp=\{p_1,...,p_n\}$。百度百科的每个属性都由$sp$来表示，如果某属性没有多形式表达，则$sp={p}, \left|sp \right|=1$。
 
-本节中的同语言对齐方法较为严格，准确率较高，其一对多的情景抽象出的$sp$可以直接利用。因为对齐结果较少，我们对其进行了人工验证，准确率在xxxxxx。
+本节中的同语言对齐方法较为严格，准确率较高，一对多情况下抽象出的$sp$可以直接利用。因为对齐结果较少，我们对其进行了人工验证，准确率在xxxxxx。
 
-为寻找更多的相似属性，还可以进一步通过文本、值域、结构等维度入手，对属性聚类。在理想情况下，一个簇表示一个超级属性。
-
-我们尝试从文本相似度、Word2Vec语义相似度、值相似度三个维度特征入手，对百度百科同一领域的属性进行聚类。以\textit{电影(film)}，\textit{公司(company)}, \textit{歌曲(single)}三个领域的结果进行检查，并与对齐方法进行对比，见表\ref{tab:similar-property-compare}
+为寻找更多的相似属性，还可以进一步通过文本、值域、结构等特征对属性聚类。在理想情况下，一个类簇可以表示一个超级属性。我们尝试从文本相似度、Word2Vec语义相似度、值相似度三个维度特征入手，对百度百科同一领域的属性进行聚类。以\textit{电影(film)}，\textit{公司(company)}, \textit{歌曲(single)}三个领域的结果进行评价，并与对齐方法进行对比，表\ref{tab:similar-property-compare}给出了对比结果。
 
 \begin{table}[htb]
   \centering
@@ -208,11 +202,11 @@ x_{k,j} =
     \end{tabular}
 \end{table}
 
-经过表\ref{tab:similar-property-compare}中对比可看出，基于聚类方法的同语言对齐，虽然在对齐数量上有明显增加，提高了召回率，但准确率却有所损失。超属性作为之后跨语言对齐的对象，其存在的瑕疵会造成错误累加，因此对其质量要求很高。基于此，我们使用同语言对齐时获得的相似属性结果，以保证之后工作的高质量。
+通过对比我们发现，基于聚类方法的同语言对齐，虽然在对齐数量上有明显增加，提高了召回率，但准确率却有所损失。超属性作为之后跨语言对齐的对象，其存在的瑕疵会造成错误累加，因此对其质量要求很高。基于此，我们使用同语言对齐时获得的相似属性结果，以保证之后工作的高质量。
 
 \subsection{跨语言属性种子集合生成}
 \label{sec:cross-lingual-seed}
-我们采用间接对齐的方法寻找高质量跨语言属性对齐种子，即首先依赖维基百科跨语言特性，抽取中英文属性对齐关系，以此为媒介，进一步寻找英文维基与百度百科的属性对齐关系。该过程可分为三个子步骤，即分别构建中英文维基百科、中文维基与百度百科、英文维基与百度百科的属性对齐关系。其中第二步在\ref{similar-property}节中已有结果，在此不做赘述。
+我们采用间接对齐的方法寻找高质量跨语言属性对齐种子，即首先依赖维基百科跨语言特性，抽取中英文属性对齐关系，并以此为媒介寻找英文维基与百度百科的属性对齐关系。该过程可分为三个子步骤，即分别构建中英文维基百科、中文维基与百度百科、英文维基与百度百科的属性对齐关系。其中第二步在\ref{sec:similar-property}节中已有结果，在此不做赘述。
 
 {\heiti 中英文维基百科跨语言属性对齐}在维基的语言链接，即现有跨语言模板与跨语言词条基础上实现。具体来说，分为三种情况，图\ref{fig:cross-lingual-seed}给出了较为直观的展示：
 
@@ -249,14 +243,13 @@ x_{k,j} =
 
 {\heiti 跨语言种子集合生成}，即英文维基与百度百科属性对齐结果，利用前两步的结果作为媒介，两两对齐，获得双语对齐关系。
 
-\subsubsection{实验结果}
-在第一步中，我们从2016.02版的中文维基与2016.03版的英文维基中获取中英文对齐关系。表\ref{tab:zhwiki-enwiki-cross-lingual}中统计了三种方法分别获得的跨语言属性链接数量，并举出例子。
+我们从2016.02版的中文维基与2016.03版的英文维基中获取基于跨语言模版的对齐关系。表\ref{tab:zhwiki-enwiki-cross-lingual}中统计了三种方法分别获得的跨语言属性链接数量和对应举例。最终的跨语言对齐属性种子集合共包含2262个属性，涉及概念领域235个，表\ref{tab:cross-lingual-seed-examples}给出了对齐示例。
 
 \begin{table}[htb]
   \centering
   \caption{中英文维基属性跨语言对齐结果}
   \label{tab:zhwiki-enwiki-cross-lingual}
-    \begin{tabular}{ccc} 
+    \begin{tabular}{ccc}
       \toprule[1.5pt]
       {\heiti 对齐方法} & {\heiti 数量} &  {\heiti 举例} \\\midrule[1pt]
       基于跨语言模板对齐 & 16104 & Editing by  剪辑 Date(s) 日期   \\
@@ -266,19 +259,17 @@ x_{k,j} =
       \bottomrule[1.5pt]
     \end{tabular}
 \end{table}
-
-在最终的跨语言属性种子集合生成结果见表\ref{tab:cross-lingual-seed}，表\ref{tab:cross-lingual-seed-examples}给出了对齐示例。
-
-\begin{table}[htb]
-  \centering
-  \caption{跨语言属性对齐种子集合结果}
-  \label{tab:cross-lingual-seed}
-    \begin{tabular}{ccc}\toprule[1.5pt]
-      {\heiti 对齐数量} & {\heiti 概念数量} \\\midrule[1pt]
-      2262 & 235  \\
-      \bottomrule[1.5pt]
-    \end{tabular}
-\end{table}
+%
+%\begin{table}[htb]
+%  \centering
+%  \caption{跨语言属性对齐种子集合结果}
+%  \label{tab:cross-lingual-seed}
+%    \begin{tabular}{ccc}\toprule[1.5pt]
+%      {\heiti 对齐数量} & {\heiti 概念数量} \\\midrule[1pt]
+%      2262 & 235  \\
+%      \bottomrule[1.5pt]
+%    \end{tabular}
+%\end{table}
 
 \begin{table}[htb]
   \centering
@@ -286,14 +277,14 @@ x_{k,j} =
   \label{tab:cross-lingual-seed-examples}
     \begin{tabular}{ccc}\toprule[1.5pt]
       {\heiti 概念} & {\heiti 英文属性} &  {\heiti 中文属性} \\\midrule[1pt]
-      \multirow{5}{*}{电影} 
+      \multirow{5}{*}{电影}
       & Box office    & 累计票房/全球票房/票房  \\
       & Budget        & 制片成本/预算/电影投资  \\
       & Directed by   & 导演/编剧  \\
       & Distributed by & 出品公司/发行商/发行方/发行公司  \\
-      & Release dates & 上映日期/上映/首映日期/上映时间/播放期间  \\ 
+      & Release dates & 上映日期/上映/首映日期/上映时间/播放期间  \\
       \midrule[1.0pt]
-      \multirow{5}{*}{大学} 
+      \multirow{5}{*}{大学}
       & Active       & 创建时间/建立时间/创办时间/办学时间  \\
       & Affiliations & 主管部门  \\
       & Former names & 老校名  \\
@@ -305,17 +296,21 @@ x_{k,j} =
 
 \subsection{跨语言属性对齐}
 \label{sec:cross-lingual-property-matching}
-对齐是一对一匹配的精准工作，我们将跨语言属性对齐设计成二分类任务，即“对齐”返回1，“非对齐”返回0，并采用逻辑斯谛回归模型进行训练与预测。
+我们将跨语言属性对齐设计成二分类任务，并采用逻辑斯谛回归模型进行训练与预测。
 
 \subsubsection{特征选择}
 特征选用三类特征：基于文本特征、基于结构特征、基于分布特征。
 
-{\heiti 基于文本特征} 我们对两部分文本进行计算，分别为属性标签和属性值。针对语言的差异，我们利用百度翻译API\footnote{http://fanyi.baidu.com/}，获得属性标签中译英、英译中两类翻译结果，与属性值英译中翻译结果。
+{\heiti 基于文本特征} 我们对属性标签和属性值两部分文本分别进行相似度计算。针对语言的差异，我们利用百度翻译API\footnote{\url{http://fanyi.baidu.com/}}，获得属性标签中译英、英译中两类翻译结果，与属性值英译中翻译结果。
 
-文本相似度多采用编辑距离(EditDistance)计算，编辑距离相似度被定义为:
+文本相似度多采用编辑距离(Edit Distance)计算，编辑距离相似度被定义为:
 \begin{equation}
-ed\_sim(s_1, s_2) = \frac{edit\_distance(s_1, s_2))}{max(\left| s_1 \right |,\left | s_2 \right |))}
+ed\_sim(s_1, s_2) = \frac{1}{1+edis(s_1,s_2)}
 \end{equation}
+\begin{equation}
+edis(s_1,s_2)=\frac{edit\_distance(s_1, s_2))}{max(\left| s_1 \right |,\left | s_2 \right |))}
+\end{equation}
+其中$edit\_distance(s_1, s_2))$表示字符串$s_1$和$s_2$的编辑距离，即由$s_1$变化到$s_2$所需的增、删、改的最小操作数。
 
 标签相似度：对中英文属性的标签进行计算，转换成同语言后，分别进行中文相似度计算与英文相似度计算，取最大值作为特征值。
 \begin{equation}
@@ -342,39 +337,33 @@ sim_{article\_v}(sp_e, sp_z) = \frac{\sum_{a_e\in A(sp_e), a_z \in A(sp_z)} Equa
 \end{equation}
 $A(sp)\cap CL$为含有跨语言链接的词条集合。
 
-数字型属性值：由数字构成的值，比如年龄、日期、电影票房等，被定义为数字型属性值。对于这类属性值，不能直接对比，也不适合用文本相似度计算方法。我们还面临异构百科带来的属性值多样化表达问题：不同百科中，相同词条同一属性的属性值可能由不同形式表示，比如迈克尔·菲尔普斯(Michael Phelps)在英文维基中，身高(Height)为“6 feet 4 inches”，而在百度百科中则表示成193cm。考虑到以上特点，我们用皮尔逊积矩相关系数(Pearson product-moment correlation coefficient)计算数字型属性值的相似度，该系数衡量两个变量的线性相关程度。具体见公式\ref{equ:number_value_similarity}
-
+数字型属性值：由数字构成的值，比如年龄、日期、电影票房等，被定义为数字型属性值。对于这类属性值，不能直接对比，也不适合用文本相似度计算方法。我们还面临异构百科带来的属性值多样化表达问题：不同百科中，相同词条同一属性的属性值可能由不同形式表示，比如迈克尔·菲尔普斯(Michael Phelps)在英文维基中，身高(Height)为“6 feet 4 inches”，而在百度百科中则表示成193cm。考虑到以上特点，我们用皮尔逊积矩相关系数(Pearson product-moment correlation coefficient)计算数字型属性值的相似度，该系数衡量两个变量的线性相关程度。具体见公式\ref{equ:number_value_similarity}。
 \begin{equation}
 \label{equ:number_value_similarity}
 sim_{number\_v}(sp_e, sp_z) =
 \end{equation}
 
 文本型属性值：既不指向实体，又没有数字特征的属性值，被认为是文本型属性值。我们用编辑距离方法计算其相似度\ref{}:
-
 \begin{equation}
 \label{equ:literal_value_similarity}
-sim_{literal\_v}(sp_e, sp_z) = \frac { \sum _{ { a }_{ e }\in { A }_{ e },{ a }_{ z }\in { A }_{ z } }{ ed\_ sim\left( { a }_{ e }.v,{ a }_{ z }.v \right)  }  }{ \sum _{ { a }_{ e }\in { A }_{ e },{ a }_{ z }\in { A }_{ z } }{ Equal\left( { a }_{ e },{ a }_{ z } \right)  }  }  
+sim_{literal\_v}(sp_e, sp_z) = \frac { \sum _{ { a }_{ e }\in { A }_{ e },{ a }_{ z }\in { A }_{ z } }{ ed\_ sim\left( { a }_{ e }.v,{ a }_{ z }.v \right)  }  }{ \sum _{ { a }_{ e }\in { A }_{ e },{ a }_{ z }\in { A }_{ z } }{ Equal\left( { a }_{ e },{ a }_{ z } \right)  }  }
 \end{equation}
-
 其中$a_e, a_z$分别为$a_e(sp_e), a_z(sp_z)$的简写，表示包含属性$sp$的词条；$A_e, A_z$分别为$A_e(sp_e),A_z(sp_z)$的简写，表示使用属性$sp$的所有词条集合。
 
 为了减小计算复杂度并提高准确度，我们将属性值相似度的计算粒度设定为单个文章，即只与对齐文章信息框内的属性值进行比对。
 
 {\heiti 基于结构特征}
-当前大部分跨领域的知识库都以在线百科为数据源而建立。百科内部本身就存在着一些语义关系，比如子分类和父分类间的\textit{subClassOf}关系、词条实体与分类之间的\textit{instanceOf}关系。语义信息常被用来抽取特征\cite{wang2014cross}，表示实例等在结构上的特点。我们利用百科里现有的语义关系，抽取出两个特征，分别为词条相似度$sim_{article}$与分类相似度$sim_{category}$。文章相似度即计算使用两属性词条的交集，定义为：\ref{equ:sim-article}，概念相似度即计算两属性领域的相似程度，定义为：\ref{equ:sim-category}。我们用Normalized Google Distance(NGD)来计算其中语义关系。
-
+当前大部分跨领域的知识库都以在线百科为数据源而建立。百科内部本身就存在着一些语义关系，比如子分类和父分类间的\textit{subClassOf}关系、词条实体与分类之间的\textit{instanceOf}关系。语义信息常被用来抽取特征\cite{wang2014cross}，表示实例等在结构上的特点。我们利用百科里现有的语义关系，抽取出两个特征，分别为词条相似度$sim_{article}$与分类相似度$sim_{category}$。文章相似度即计算使用两属性词条的交集（公式\ref{equ:sim-article}），概念相似度即计算两属性领域的相似程度（公式\ ref{equ:sim-category}）。我们用标准谷歌距离（Normalized Google Distance，简称NGD）来进行相似度计算。
 \begin{equation}
 \label{equ:sim-article}
 sim_{article}(sp_e, sp_z) = \frac{\max\{\log |A_e|, \log |A_z|\} - \log|A_e \cap A_z|}
 {\log |A(sp_e) \cup A(sp_z)| - \min\{\log |A_e|, \log |A_z|\}}
 \end{equation}
-
 \begin{equation}
 \label{equ:sim-category}
 sim_{category}(sp_e, sp_z) = \frac{\max\{\log |Ca_e|, \log |Ca_z|\} - \log|Ca_e \cap Ca_z|}
 {\log |Ca(sp_e) \cup Ca(sp_z)| - \min\{\log |Ca_e|, \log |Ca_z|\}}
 \end{equation}
-
 其中$A_e, A_z$分别为$A_e(sp_e),A_z(sp_z)$的简写，表示使用属性$sp$的所有词条集合：$Ca_e, Ca_z$分别为$Ca_e(sp_e), Ca_z(sp_z)$的简写，表示属性$sp$相关的分类；
 
 %基于语义的特征表征的是两个
@@ -390,25 +379,21 @@ sim_{popular}(sp_e, sp_z) = abs(\frac{|A(sp_e)|}{|A(C_e)|} - \frac{|A(sp_z)|}{|A
 作为标准的二分类模型，我们用准确率(Precision)，召回率(Recall)，与F1值(F1-Measure)来评测跨语言属性对齐方法。
 
 (1)准确率$Precision$：对齐结果中正确的数量与找到的对齐总数的比值：
-
 \begin{align}
-Precision = \frac { \left| A\cap T \right|  }{ \left| A \right|  } 
+Precision = \frac { \left| A\cap T \right|  }{ \left| A \right|  }
 \end{align}
 
 (2)召回率$Recall$：对齐结果中正确的数量与全部已知对齐对数的比值：
-
 \begin{align}
-Recall = \frac { \left| A\cap T \right|  }{ \left| T \right|  } 
+Recall = \frac { \left| A\cap T \right|  }{ \left| T \right|  }
 \end{align}
 
 (3)$F1-Measure$：是结合准确率与召回率的总体评价：
-
 \begin{align}
-F1-Measure = \frac { 2PR }{ P+R } 
+F1-Measure = \frac { 2PR }{ P+R }
 \end{align}
 
-我们的训练与测试数据来自\ref{sec:cross-lingual-seed}中抽取的跨语言属性链接种子。取2000个为正例，随机组合取2000个负例，带入逻辑斯谛回归模型。最终结果显示在表\ref{tab:property-matching-result}
-
+我们的训练与测试数据来自\ref{sec:cross-lingual-seed}中抽取的跨语言属性链接种子。取2000个为正例，随机组合取2000个负例，带入逻辑斯谛回归模型。最终结果显示在表\ref{tab:property-matching-result}。
 \begin{table}[htb]
   \centering
   \caption{跨语言属性对齐方法评测结果}
@@ -426,14 +411,14 @@ F1-Measure = \frac { 2PR }{ P+R }
 %  \label{tab:property-matching-examples}
 %    \begin{tabular}{ccc}\toprule[1.5pt]
 %      {\heiti 概念} & {\heiti 英文属性} &  {\heiti 中文属性} \\\midrule[1pt]
-%      \multirow{5}{*}{电影} 
+%      \multirow{5}{*}{电影}
 %      & Box office    & 累计票房/全球票房/票房  \\
 %      & Budget        & 制片成本/预算/电影投资  \\
 %      & Directed by   & 导演/编剧  \\
 %      & Distributed by & 出品公司/发行商/发行方/发行公司  \\
-%      & Release dates & 上映日期/上映/首映日期/上映时间/播放期间  \\ 
+%      & Release dates & 上映日期/上映/首映日期/上映时间/播放期间  \\
 %      \midrule[1.0pt]
-%      \multirow{5}{*}{大学} 
+%      \multirow{5}{*}{大学}
 %      & Active       & 创建时间/建立时间/创办时间/办学时间  \\
 %      & Affiliations & 主管部门  \\
 %      & Former names & 老校名  \\
