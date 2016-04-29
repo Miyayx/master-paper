@@ -1,5 +1,7 @@
 \chapter{基于异构百科的跨语言属性对齐}
 \label{cha:property-matching}
+本章在两个异构百科之间进行跨语言属性对齐，
+提出跨语言属性对齐框架，通过概念属性生成、同语言属性对齐与相似属性合并、跨语言对齐种子生成以及跨语言属性对齐四个步骤对属性进行分析。首先抽象出百度百科下概念模板，实现概念层次的对齐；之后在同语言百科内进行属性对齐与同义表达的查找；再次使用模式匹配抽取高准确率的中英文对齐关系，并以此为训练集训练二分类模型，作为判断关系对是否对齐的分类工具。 
 
 \section{本章引论}
 维基百科是全球最大的百科数据库，目前支持228个语言。因语言差异、地域区别等多种原因，英文维基词条与信息框数量远超其他语言，信息量很不对称。仅以中英文维基为例，如图\ref{fig:en-zh-article-infobox-compare}所示，截止到2016年2月，英文维基词条约是中文维基的6倍，包含信息框的词条数更是高达9倍。中英文维基数据，尤其在信息框数据，的严重不平衡性，使得基于维基百科构建的中英文知识库缺少足够的属性链接。
@@ -26,11 +28,10 @@
 \item 跨语言属性对齐，既包括通过模式匹配与间接对齐生成的跨语言对齐种子，也包括通过二元分类器训练并扩展出的属性对齐对。
 \end{enumerate}
 
-
 \section{问题描述}
 本章的工作致力于解决中英文异构百科的跨语言信息框属性对齐问题。图\ref{fig:frozen-infobox}为电影《冰雪奇缘》在维基百科与百度百科中的信息框对比图，从左到右别为中文维基、英文维基、百度百科中的信息框。本章任务则是将指代同一个实体的中英文词条$a_e,a_z$中两个信息框中描述相同特性的属性匹配，比如\textit{Starring}对\textit{主演}，\textit{Directed by}对\textit{导演}。
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \includegraphics[width=0.9\columnwidth]{frozen-infobox}
   \caption{中英文信息框属性对齐示例}
@@ -406,22 +407,22 @@ F1-Measure = \frac { 2PR }{ P+R }
   \caption{跨语言属性对齐方法评测结果}
   \label{tab:property-matching-result}
     \begin{tabular}{cccc}\toprule[1.5pt]
-      {\heiti 方法} & {\heiti 平均准确率} & {\heiti 平均召回率} & {\heiti 平均F1值}  \\ \midrule[1pt]
-      跨语言属性对齐 & 92.9\% & 46.2\% & 61.7\% \\
+      {\heiti 方法} & {\heiti 准确率(\%)} & {\heiti 召回率(\%)} & {\heiti F1值(\%)}  \\ \midrule[1pt]
+      跨语言属性对齐 & 92.9 & 46.2 & 61.7 \\
       \bottomrule[1.5pt]
     \end{tabular}
 \end{table}
 
-其中超属性对齐xxx个，通过模型对齐的方法有xx对。如果认为超属性中有一个子属性对齐，则其他子属性也对齐，目前对齐的xx个超属性中，则对齐关系可增加xxx个，准确率与召回率分别提升约xx\%与xx\%。
+%其中超属性对齐xxx个，通过模型对齐的方法有xx对。如果认为超属性中有一个子属性对齐，则其他子属性也对齐，目前对齐的xx个超属性中，则对齐关系可增加xxx个，准确率与召回率分别提升约xx\%与xx\%。
 
-最终，我们用本章方法共扩展了xx个属性对齐关系，在表\ref{tab:property-matching-examples}中给出例子。其中\textit{电影}概念下共扩展了835个对齐关系，运行时间约30分钟，\textit{大学}概念下共扩展了xx个对齐关系，运行时间约xx分钟。
+最终，我们用本章方法共扩展了xx个属性对齐关系，在表\ref{tab:property-matching-examples}中给出例子。其中\textit{电影}概念下共扩展了635个对齐关系，运行时间约30分钟，\textit{大学}概念下共扩展了843个对齐关系，运行时间约10分钟。
 
 \begin{table}[htb]
   \centering
   \caption{跨语言属性对齐方法结果举例}
   \label{tab:property-matching-examples}
     \begin{tabular}{cll}\toprule[1.5pt]
-      {\heiti 概念(扩展数量)} & {\heiti 英文属性} &  {\heiti 中文属性} \\\midrule[1pt]
+      {\heiti 概念} & {\heiti 英文属性} &  {\heiti 中文属性} \\\midrule[1pt]
       \multirow{5}{*}{电影}
       & Length        & 胶片长度/影评长度/长度/每集长度/摄影格式  \\
       & Music by      & 原创音乐/音乐/音乐风格/配乐/背景音乐      \\
@@ -430,11 +431,11 @@ F1-Measure = \frac { 2PR }{ P+R }
       & executive     & 总监制/总策划                             \\
       \midrule[1.0pt]
       \multirow{5}{*}{大学}
-      & Active       & 创建时间/建立时间/创办时间/办学时间        \\
-      & Affiliations & 主管部门                                   \\
-      & Former names & 老校名                                     \\
-      & Location     & 所属地区/地址/校址/学校地址                \\
-      & President    & 院长/董事长/现任校长/现任院长              \\
+      & TotalArea      & 面积/建筑总面积/占地总面积/占地面积/总面积  \\
+      & colour         & 代表色/官方颜色/校色                  \\
+      & Founders       & 投资人/创始人/创校人/创立者           \\
+      & Membership     & 工作人员/教职员工/教员                \\
+      & World Ranking  & 院校排名/学校排名/时间大学排名/世界排名     \\
       \bottomrule[1.5pt]
     \end{tabular}
 \end{table}
@@ -447,11 +448,11 @@ F1-Measure = \frac { 2PR }{ P+R }
   \caption{特征组合对结果的影响}
   \label{tab:feature-compare}
     \begin{tabular}{lccc}\toprule[1.5pt]
-      {\heiti 特征组合} & {\heiti 准确率} &  {\heiti 召回率} & {\heiti F1值}  \\ \midrule[1pt]
-       $sim_{label}$& 91.0\%       & 45.8\% & 60.9 \\
-       $sim_{label}+sim_{value}$ & 91.8\% & 46.1\% & 61.2  \\
-       $sim_{label}+sim_{value}+sim_{article}$ & 92.3\% & 45.8\% & 61.5  \\
-       $sim_{label}+sim_{value}+sim_{article}+sim_{popular}$ & 92.9\% & 46.2\% & 61.7 \\
+      {\heiti 特征组合} & {\heiti 准确率(\%)} &  {\heiti 召回率(\%)} & {\heiti F1值(\%)}  \\ \midrule[1pt]
+       $sim_{label}$& 91.0       & 45.8 & 60.9 \\
+       $sim_{label}+sim_{value}$ & 91.8 & 46.1 & 61.2  \\
+       $sim_{label}+sim_{value}+sim_{article}$ & 92.3 & 45.8 & 61.5  \\
+       $sim_{label}+sim_{value}+sim_{article}+sim_{popular}$ & 92.9 & 46.2 & 61.7 \\
       \bottomrule[1.5pt]
     \end{tabular}
 \end{table}
@@ -459,5 +460,4 @@ F1-Measure = \frac { 2PR }{ P+R }
 \section{本章小结}
 本章主要解决英文维基与百度百科两个异构百科之间的跨语言属性对齐问题。
 为了尽可能找到更多属性对齐，我们提出跨语言属性对齐框架，该框架由概念属性生成、同语言属性对齐与相似属性合并、跨语言对齐种子生成以及跨语言属性对齐四部分组成。概念模板针对百度百科没有信息框模板信息的情况，以维基模板为指导抽象出百度百科下的对应概念与属性集合，首先实现概念模板层次的对齐；同语言属性对齐模块给出中文维基与百度百科的对齐策略，获得高准确率的异构百科下的属性对齐关系与属性多表达集合；跨语言对齐种子集合生成模块将中文维基作为媒介，抽取出精准的英文维基与百度百科的中英文属性对齐关系；最终我们基于文本、语义、分布三类特征，训练出跨语言属性对齐二分类模型，作为最终结果。
-
 
