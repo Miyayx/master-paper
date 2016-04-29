@@ -1,6 +1,8 @@
 \chapter{XLore系统与应用接口构建}
 \label{cha:xlore}
 
+本章简单描述了跨语言知识库XLore的构建流程，重点从知识展示系统与知识利用的实体接口上进行了介绍。
+
 \section{本章引论}
 
 跨语言知识库对全球知识的共享有着很大贡献。然而，中英文的跨语言知识库却很少，主要有以下几点原因：1）相对于丰富的英文知识，中文知识极度匮乏 2）现有中英文跨语言对应关系的缺乏。为解决以上问题，我们构建了一个大型中英文跨语言知识库（Cross-lingual Knowledge Base），该知识库命名为{\heiti XLore}。
@@ -35,38 +37,34 @@ XLore知识库融合中英文维基百科、百度百科与互动百科的信息
 本小节给出XLore知识库的知识数量统计结果，其中表\ref{tab:extract-result}为从各百科中抽取的概念、属性、实例数量统计，表\ref{tab:xlore-result}为融合后最终知识库中知识数量。
 
 \begin{table}[htb]
-    \centering
-  \begin{minipage}[t]{0.8\linewidth}
-    \caption{各元素抽取结果统计}
-    \label{tab:extract-result}
-    \begin{tabularx}{\linewidth}{lXXXX}
-        \toprule[1.5pt]
-               & 英文维基    & 中文维基   & 互动百科    & 百度百科     \\ \midrule[1pt]
+  \centering
+  \caption{各元素抽取结果统计}
+  \label{tab:extract-result}
+    \begin{tabular}{ccccc}
+      \toprule[1.5pt]
+         & 英文维基    & 中文维基   & 互动百科    & 百度百科     \\ \midrule[1pt]
         \#概念 & 982,432   & 159,705  & 31,802    & 1300      \\
         \#实例 & 4,304,113 & 662,650  & 5,590,751 & 5,622,404 \\
         \#属性 & 43,976    & 18,842   & 1187      & 139,634   \\
-        \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
+      \bottomrule[1.5pt]
+    \end{tabular}
 \end{table}
 
 \begin{table}[htb]
-    \centering
-  \begin{minipage}[t]{0.9\linewidth}
-    \caption{XLore结果展示}
-    \label{tab:xlore-result}
-    \begin{tabularx}{\linewidth}{lXXXXXX}
-        \toprule[1.5pt]
-        \multicolumn{1}{c}{} & \multicolumn{2}{c}{概念}     & \multicolumn{2}{c}{实例}                   & \multicolumn{2}{c}{属性}    \\ \midrule[1pt]
+  \centering
+  \caption{XLore结果展示}
+  \label{tab:xlore-result}
+    \begin{tabular}{lcccccc}
+      \toprule[1.5pt]
+      \multicolumn{1}{c}{} & \multicolumn{2}{c}{概念}     & \multicolumn{2}{c}{实例}                   & \multicolumn{2}{c}{属性}    \\ \midrule[1pt]
 英文            & 639,020 & 96.26\%          & 3,879,121   & 38.79\%                & 15,380  & 27.24\%                \\
 中文            & 88,615  & 13.35\%          & 7,409,519   & 68.25\%                & 51,618  & 91.44\%                \\
 跨语言          & 63,895  & 9.63\%           & 432,598     & 3.98\%                 & 10,549  & 18.69\%                \\
 %English O       & 575,125 & 86.65\%                & 3,446,523           & 31.75\%                & 4,831   & 8.56\%    \\ \hline
 %Chinese O       & 24,720  & 3.72\%                 & 6,976,921           & 64,27\%                & 41,069  & 72.75\%   \\ \hline
-总数           & 663,740 & {-}               & 10,856,042  & {-}                    & 56,449  & {-} \\
+总数           & 663,740 & {—}               & 10,856,042  & {—}                    & 56,449  & {—} \\
       \bottomrule[1.5pt]
-    \end{tabularx}
-  \end{minipage}
+    \end{tabular}
 \end{table}
 
 \section{XLore系统介绍}
@@ -83,15 +81,15 @@ XLore网站\footnote{\url{http://xlore.org}}旨在对外展示系统收集和整
   \label{fig:xlore-architecture}
 \end{figure}
 
-为了语义化信息，我们将数据依托于图数据库。当前知名的的图数据库有Neo4J\footnote{\url{http://neo4j.com/}}，AllegroGraph\footnote{\url{http://allegrograph.com/allegrograph/}}，Virtuoso\footnote{\url{http://virtuoso.openlinksw.com/}}等，鉴于我们的数据是以三元组的形式组织的，更适用于triple—store类型的数据库，最终我们选用商业版Virtuoso（Virtuoso Universal Server）作为存储容器。
+{\heiti 数据层：}为了语义化信息，我们将数据依托于图数据库。当前知名的的图数据库有Neo4J\footnote{\url{http://neo4j.com/}}，AllegroGraph\footnote{\url{http://allegrograph.com/allegrograph/}}，Virtuoso\footnote{\url{http://virtuoso.openlinksw.com/}}等，鉴于我们的数据是以三元组的形式组织的，更适用于triple—store类型的数据库，最终我们选用商业版Virtuoso（Virtuoso Universal Server）作为存储容器。
 
 %Virtuoso是由OpenLink软件公司开发的一个混合型数据库，它既支持传统的RDBMS数据，也支持RDF等其他图类型数据的存储与查询。其商业版本（Virtuoso Universal Server）可支持多CPU处理、多会话访问以及集群网络环境等。商业版Virtuoso是闭源的，但OpenLink公司提供一个名为OpenLink Virtuoso的开源版本［GitHub链接］，供使用者编译与尝试。
 
-为了提高搜索效率，我们使用Redis\footnote{\url{http://redis.io/}}充当缓存。为了给出更好的搜索体验，用为各个元素标签及其URI建立了索引，使用Lucene的模糊查询代替完全匹配，返回更多相关搜索结果。
+{\heiti 缓存层：}为了提高搜索效率，我们使用Redis\footnote{\url{http://redis.io/}}充当缓存。为了给出更好的搜索体验，用为各个元素标签及其URI建立了索引，使用Lucene的模糊查询代替完全匹配，返回更多相关搜索结果。
 
-Web框架采用JSP＋Struts2.0搭建，运行在Tomcat7.0 Web服务器上。
-
-对于概念与实例，我们基于D3.js可视化库\footnote{\url{https://d3js.org/}}，提供了关系可视化，包括概念-子概念的关系，实例-相关实例的关系。
+{\heiti 展示层：}Web框架采用JSP＋Struts2.0搭建，运行在Tomcat7.0 Web服务器上。
+对于知识库中的概念、属性、实例三元素，我们分别创建了对应页面展示其关联知识(详见\ref{sec5:xlore-knowledge-representation})，同时
+基于D3.js可视化库\footnote{\url{https://d3js.org/}}，为概念与实例提供了关系可视化，包括概念-子概念的关系，实例-相关实例的关系(详见\ref{sec5:xlore-visualization})。此外提供两种查询方式(详见\ref{sec5:xlore-knowledge-search})。
 
 \begin{figure}[ht]
   \centering
@@ -101,6 +99,7 @@ Web框架采用JSP＋Struts2.0搭建，运行在Tomcat7.0 Web服务器上。
 \end{figure}
 
 \subsection{XLore知识展示}
+\label{sec5:xlore-knowledge-representation}
 截止到2015年8月，XLore共收录663,740个概念、56,449个属性、10,856,042个实例。图\ref{fig:xlore-home}为XLore网站首页，以表格的形式提供了顶层及其下两层的概念层及其统计数据，列出的实例的样例数据，可直接点击查看相应实例页面。作为双语知识库，XLore提供了语言切换功能，同时满足中文与外文用户的语言需求。
 
 XLore网站为三种知识提供展示，分别为概念、属性、实例。
@@ -116,7 +115,7 @@ XLore网站为三种知识提供展示，分别为概念、属性、实例。
 \end{figure}
 
 \subsection{XLore关系可视化}
-
+\label{sec5:xlore-visualization}
 XLore提供了两种数据可视化展示，分别为概念上下位关系可视化与相关实例可视化，图\ref{fig:xlore-visualization}分别给出了可视化样例，其中图\ref{fig:xlore-visualization-instance}显示指定实例及其相关实例，直接相关实例（信息框中实例）距离近，间接相关实例（文本内链接实例）距离较远，实例以领域划分，我们根据百科分类关系，定义14 个顶级概念，包括科学、社会、体育、经济等，实例被归属于距离最短的顶级概念中，如果距离多个概念一致，则通过投票机制决定，及选取到达次数最多的概念；图\ref{fig:xlore-visualization-concept}显示指定概念及其子概念（黄色）、父概念（绿色）。
 
 \begin{figure}[ht]
@@ -137,6 +136,7 @@ XLore提供了两种数据可视化展示，分别为概念上下位关系可视
 \end{figure}
 
 \subsection{XLore知识查询}
+\label{sec5:xlore-knowledge-search}
 XLore提供搜索框文本查询与SPARQL语句查询两种查询方法。
 
 搜索框显示于每个页面的上方，输入要查询的中文或英文字符串，即可获得模糊查询结果。默认情况下，系统会同时返回概念、属性和实例三类搜素结果，用户可根据具体的需求进行选择搜索。图\ref{fig:xlore-search-engine}为搜索结果页面展示。
@@ -221,9 +221,9 @@ XLore作为一个通用领域的跨语言知识库，囊括了各个领域的丰
       \toprule[1.5pt]
       {\heiti 类型} & {\heiti 英文维基} & {\heiti 中文维基} & {\heiti 百度百科} & {\heiti 互动百科} \\\midrule[1pt]
       标题       & 16.345,549 & 2,739,609 & 5,794,412 & 5,590,173 \\
-      内链接     & 45,650,452 & 6,784,030 & 5,875,459 & - \\
+      内链接     & 45,650,452 & 6,784,030 & 5,875,459 & — \\
       消歧页面   & 240,578    & 2,550     & 174,862 & 24,158 \\
-      重定向页面 & 2,759,377  & 362,767   & -  & - \\
+      重定向页面 & 2,759,377  & 362,767   & —  & —  \\
       合并总对数 & 55,834,865 & 8,607,098 & 7,640,773 & 5,590,173 \\
       \bottomrule[1.5pt]
     \end{tabular}
