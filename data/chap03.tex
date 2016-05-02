@@ -17,7 +17,6 @@ Schema作为知识库骨架，在知识库构建过程中占有重要地位。�
 \end{figure}
 
 概念属性生成工作是其他属性研究的基础，其结果的数量与质量在很大程度上影响着其他研究的准确率，过多杂质的引入会增加后续工作的难度。
-
 然而百科数据的杂乱性，使得概念属性生成工作注定繁琐，本章通过对维基百科数据文件中的模板信息进行大量观察与分析，总结出模板与属性的定义规律，基于模式匹配提取概念属性，其结果覆盖了90\%以上的维基词条，为今后对信息框属性的进一步分析打下了良好的基础。
 
 本章主要对信息框属性进行研究，后文中提到的{\heiti 模板}，如无特别说明，统一指代{\heiti 信息框模板}。
@@ -42,7 +41,7 @@ Schema作为知识库骨架，在知识库构建过程中占有重要地位。�
         \caption{键值对模板示例}
         \label{fig:template-keyvalue}
     \end{subfigure}
-    \hspace{0.01cm}
+    \hspace{0.02cm}
     \begin{subfigure}{7.2cm}
         \centering
         \fbox{\includegraphics[width=0.8\textwidth,height=5.6cm]{template-inherit}}
@@ -81,35 +80,49 @@ Schema作为知识库骨架，在知识库构建过程中占有重要地位。�
 
 \section{问题描述}
 
-一个指定的概念$c \in C$所代表的领域下，会有一个属性集合$P(c)=\{p_{i}|i=1,2,...,n\}$ 表征$c$ 中的所有实例$I(c)$的特性。我们定义概念属性$p_{c}= <label>, p(c) \in P(c)$，其中$c$表示该属性的领域信息，只能用来描述领域内的实例$i_{c} \in I(c)$。$label$表示属性标签，属性标签相同与属性相同不等价，即给定$c_i,c_j \in C$，$p_{c_i}.label == p_{c_j}.label\nRightarrow p_{c_i} == p_{c_j}$。
+{\heiti 属性定义：} 属性描述实例的特性。一个属性$p$应该具备特定的标签$label$，通过具体属性值$v$对特定实例进行描述。
 
-本章的工作是从维基百科中生成概念属性。给定一个维基百科$W$，可以得到一系列模板$T$，模板中定义了描述一类实例的属性集合，对于模板$t \in T$，我们有$P(t)=\{p_{i}|i=1,2,...,n\}$。可以认为，模板代表着一类概念，则有$T \approx C$。基于\ref{sec:template-analysis}中对模板与属性的分析，我们对概念属性的定义需要进行如下补充说明：
+{\heiti 概念定义：}
+概念是一类实例的共有类型，一个指定的概念$c \in C$所代表的领域下，会有一个属性集合$P(c)=\{p_{i}|i=1,2,...,n\}$ 表征$c$ 中的所有实例$I(c)$的特性，只用来描述领域内的实例$i_{c} \in I(c)$。不同概念下的相同标签属性，含义可能不同，即给定$c_i,c_j \in C$，$p_{c_i}.label == p_{c_j}.label\nRightarrow p_{c_i} == p_{c_j}$。
+
+{\heiti 模板定义：} 
+给定一个维基百科$W$，可以得到一系列模板$T$，模板中定义了描述一类词条的属性集合，对于模板$t \in T$，我们有$P(t)=\{p_{i}|i=1,2,...,m\}$。
+因为模板是对一类相同类型词条的编辑规定，可以认为，模板对应着唯一概念，则有$T \approx C$。基于\ref{sec:template-analysis}中对模板与属性的分析，我们对概念属性的定义需要进行如下补充说明：
 \begin{itemize}
-\item 维基百科在数据文件中使用的属性标签，与现实在页面的不一致(图\ref{fig:film-tl-rl})。我们将数据文件中使用的标签定义为模板标签(template label)，用$tl$表示，展示在页面上的称为显示标签(render label)，用$rl$表示。则有$p_{c}.label = <tl, rl>$。
-\item 维基百科的模板可能有相近或重复，此时所代表的概念是存在包含关系的。因此严格来说，有$c = \{t_i|i=1,2...n\}$。
+\item 维基百科在数据文件中使用的属性标签，与现实在页面的不一致(图\ref{fig:film-tl-rl})。我们将数据文件中使用的标签定义为模板标签(template label)，用$tl$表示，展示在页面上的称为显示标签(render label)，用$rl$表示。则有$p.label = <tl, rl>$。
+\item 维基百科的模板可能有相近或重复，此时所代表的概念是存在包含关系的。因此严格来说，有$c = \{t_i|i=1,2...k\}$。
 \end{itemize}
 
-具体到维基百科，本章工作抽象为：给定一个维基百科$W = <T>$，生成概念集合$C$，其中$c = \{t_i|i=1,2...n\}, c \in C, t_i \in T$，以及概念属性集合$\mathbb{P} = \{P(c_i)| i = 1,2,...,n\}$，其中对于$p_{c_i} \in P_{c_i}$，有$p_{c_i} = <c_i, tl, rl>$。
+从维基百科中生成概念属性，即给定一个维基百科$W = <T>$，生成概念集合$C$，其中$c = \{t_i|i=1,2...k\}, c \in C, t_i \in T$，以及概念属性集合$\mathbb{P} = \{P(c_j)| j = 1,2,...,n\}$，其中对于$p_{c_j} \in P_{c_j}$，有$p_{c_j} = <c_j, tl, rl>$。
 
 \section{概念属性生成}
 \label{sec:property-extraction}
 
-我们对三类信息框模板分别进行抽取，收集模板标签与显示标签的关系。我们发现，一个属性的显示标签，可能根据模板标签有所变化。比如“公司”概念下的所有者，在模板标签为owner时显示\textit{Owner}，在显示标签为owners时，显示\textit{Owner(s)}。抽取过程中，所有模板标签与显示标签的关系都会保留下来，我们以$<T, tl, rl>$ 的格式保留一组属性记录。
+我们对三类信息框模板分别进行抽取，收集模板标签与显示标签的关系。我们发现，一个属性的显示标签，可能对应多个模板标签。比如“公司”概念下的总部地址，在模板标签为\textit{location,location\_city,location\_country}时，其显示标签同为\textit{总部地址}。抽取过程中，所有模板标签与显示标签的关系都会保留下来，我们以$<T, tl, rl>$ 的格式保留一组属性记录。
 
-{\heiti 键值对模板($T_{kv}$)(图\ref{fig:template-examples}a)：} 这种类型的模板，其显示标签与模板标签在infobox中以
+{\heiti 键值对模板($T_{kv}$)(图\ref{fig:template-keyvalue})：} 这种类型的模板，其显示标签与模板标签在infobox中以
 
 \begin{center}
 \verb"label=显示标签"
 
 \verb"data=模板标签"
 \end{center}
-的格式存在。一个模板中，显示标签与模板标签的关系可能是一对一、一对多、多对多的，即一个属性根据不同的模板标签，可能会显示不同的标签在页面上。
+的格式存在，label与data分别带有编号，标签关系对应的一组label与data编号一致。
 
-{\heiti 表格模板($T_{table}$)(图\ref{fig:template-examples}b)：}这种类型的模板以类似表格的形式对属性进行编排，抽取方法与键值对模板不同，根据表格行列思想，通过分析$\langle td\rangle$等标签抽取。
+具体到标签抽取，维基定义通过\{\{\{\}\}\}表示变量，并经由嵌套表示多个并列变量。
+一个模板中，显示标签与模板标签的关系可能是一对一、一对多，即属性即使模板标签不同，可能会显示相同的标签在页面上。
+以图\ref{fig:template-keyvalue}中\textit{剧本}为例，label8与data8为一组，我们通过分析三层模板标签的嵌套，分别获取到\textit{tl=screenplay,劇本,剧本}三个模板标签，其中显示标签唯一，\textit{rl=剧本}，就此抽取出<Template:电影信息框,screenplay,剧本>、<Template:电影信息框,劇本,剧本>、<Template:电影信息框,剧本,剧本>三个属性记录。
 
-{\heiti 继承模板($T_{inherit}$)(图\ref{fig:template-examples}c)：}有半数左右的模板存在继承关系，即其模板标签的表示含义与父类模板相同，标签对应关系要结合父类模板来挖掘。继承模板可能继承自键值对模板、表格模板，甚至重定向模板。
+{\heiti 表格模板($T_{table}$)(图\ref{fig:template-table})：}这种类型的模板以类似表格的形式对属性进行编排，抽取方法与键值对模板不同，根据表格行列思想，通过分析$\langle th\rangle、\langle td\rangle$等标签抽取。
+
+维基百科设计了自己的条件语句，\{\{\#if\}\}设立了条件，竖线后跟条件成立后的显示标签。图\ref{fig:template-table}中表示，如果编辑者有为\textit{country}填写属性值，则这个属性以\textit{开发国家}的标签形式显示在信息框中。
+
+维基模板中不仅仅定义了属性规则，在属性的显示样式上也有自己的一套定义，比如三引号代表加粗，style中定义了css样式等等。在抽取过程中，这些装饰都需要被清理掉。此外，繁简体转换也需要注意。
+
+{\heiti 继承模板($T_{inherit}$)(图\ref{fig:template-inherit})：}有半数左右的模板存在继承关系，即其模板标签的表示含义与父类模板相同，标签对应关系要结合父类模板来挖掘。继承模板可能继承自键值对模板、表格模板，甚至重定向模板。图\ref{fig:template-inherit}中，\textit{模板$t' = 德国城市$}继承了\textit{$t = Infobox Settlement$}，以属性\textit{海拔}$p$为例，$p(t).tl = elevation\_m$，$p(t).rl$为\textit{海拔}，$p(t')$继承于$p(t)$，$p(t').tl$有两个，分别为\textit{海拔高度，Höhe}，通过$elevation\_m$，我们可以追寻到$p(t').rl = 海拔$为显示标签，。
 
 {\heiti 重定向模板($T_{redirect}$)(图\ref{fig:template-redirect})：} 这类模板虽然没有实质内容，也不建议继续使用，但其重定向关系对于分析实例对模板的应用情况至关重要，编辑者可能在编写信息框时用的旧版模板标签。图\ref{fig:template-redirect-examples}给出不同词条对同一模板的不同编辑方式。三个不同的电影词条分别可能用到\textit{Template:Infobox Film}，\textit{Template:Infobox film}，\textit{Template:电影信息框}。如果不考虑重定向模板标签，用前三类的抽取结果直接匹配，会大大影响已抽取模板对词条的覆盖率。因此重定向模板不能弃之不理。
+
 
 \begin{figure}[ht]
   \centering
@@ -160,7 +173,7 @@ Schema作为知识库骨架，在知识库构建过程中占有重要地位。�
   \label{tab:render-label}
     \begin{tabular}{ccccc}
     \toprule[1.5pt]
-      {\heiti 维基百科} & {\heiti 模版数} & {\heiti 模板属性数} & {\heiti 属性/模板}  &{\heiti 模板标签/属性} \\\midrule[1pt]
+      {\heiti 维基百科} & {\heiti $|C|$} & {\heiti $|\mathbb{P}|$} & {\heiti $|\mathbb{P}|/|C|$}  &{\heiti $|\mathbb{P}.tl|/|\mathbb{P}|$} \\\midrule[1pt]
       英文维基 & 3819 & 104741 & 27.45 & 1.27  \\
       中文维基 & 1895 & 44797  & 23.64 & 1.34  \\
     \bottomrule[1.5pt]
@@ -176,9 +189,9 @@ Schema作为知识库骨架，在知识库构建过程中占有重要地位。�
   \label{tab:coverage}
     \begin{tabular}{cccc}
       \toprule[1.5pt]
-      {\heiti 维基百科} & {\heiti 模板覆盖率} & {\heiti 模板属性覆盖率}  & {\heiti 词条覆盖率} \\\midrule[1pt]
-      英文维基 & 87.6\% & 27\% & 96.7\%  \\
-      中文维基 & 77.8\% & 33\% & 90.3\%  \\
+      {\heiti 维基百科} & {\heiti 模板覆盖率} & {\heiti 模板属性覆盖率} & {\heiti 词条覆盖率} \\\midrule[1pt]
+      英文维基 & 87.6\% & 58.3\% & 96.7\%  \\
+      中文维基 & 77.8\% & 51.1\% & 90.3\%  \\
       \bottomrule[1.5pt]
     \end{tabular}
 \end{table}
