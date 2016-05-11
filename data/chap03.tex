@@ -4,8 +4,8 @@
 
 \section{本章引论}
 
-Schema作为知识库骨架，在知识库构建过程中占有重要地位。概念和属性是Schema中的重要元素，概念集合一类相似实例，属性表征实例特征。特定概念下的实例由一组共同的属性描述，获取这些属性集合，有利于我们形成准确的Schema，进而很好的描述现实事物。
-维基百科中的信息框模板为基于维基的知识库的概念属性生成提供了丰富的信息。维基百科鼓励编辑者使用模板对词条及信息框进行组织与编辑。模板是百科针对不同主题的词条内容所列出的标准结构框架，是长期积累形成的标准写作规范。模板使词条的结构变得有规律可循，也可以有效避免关键信息的缺失。信息框的编辑也可模板化，信息框模板包含了描述一类实例的常用属性。图\ref{fig:template-infobox-film}为\textit{Template:电影信息框(Template:Infobox Film)}\footnote{\url{https://zh.wikipedia.org/wiki/Template:电影信息框}}，其中含有电影的诸多属性，如\textit{演员，导演，时长}等。模板在一定程度上描述了一个领域的信息，充分利用其中信息，对概念-属性关系的研究有很大意义。
+本体作为知识库骨架，在知识库构建过程中占有重要地位。概念和属性是本体中的重要元素，概念集合一类相似实例，属性表征实例特征。特定概念下的实例由一组共同的属性描述，获取这些属性集合，有利于我们形成准确的本体，进而很好的描述现实事物。
+维基百科中的信息框模板为基于维基的知识库的概念属性生成提供了丰富的信息。维基百科鼓励编辑者使用信息框模板对信息框进行组织与编辑。模板是百科针对不同主题的词条信息框内容所列出的标准结构框架，是长期积累形成的标准写作规范，它包含了描述一类实例的常用属性，使词条的结构变得有规律可循，也可以有效避免关键信息的缺失。图\ref{fig:template-infobox-film}为\textit{Template:电影信息框(Template:Infobox Film)}\footnote{https://zh.wikipedia.org/wiki/Template:电影信息框}，其中含有电影的诸多属性，如\textit{演员，导演，时长}等。模板在一定程度上描述了一个领域的信息，充分利用其中信息，对概念-属性关系的研究有很大意义。
 
 另一方面，属性通常带有一定的领域信息，即不同概念下的属性意义可能不一样。如标签为\textit{产地}的属性，在电影领域中表示\textit{制作国家}，而在植物领域中则表示\textit{生长地点}。基于维基百科构建的知识库通常通过信息框内容扩展属性，但并未对属性进行明显的领域区分，相同标签的属性往往一视同仁。以概念领域划分属性，可以有效避免属性歧义，此时属性的意义也依赖于概念，同一个概念下的属性含义唯一。
 
@@ -17,7 +17,7 @@ Schema作为知识库骨架，在知识库构建过程中占有重要地位。�
 \end{figure}
 
 概念属性生成工作是其他属性研究的基础，其结果的数量与质量在很大程度上影响着其他研究的准确率，过多杂质的引入会增加后续工作的难度。
-然而百科数据的杂乱性，使得概念属性生成工作注定繁琐，本章通过对维基百科数据文件中的模板信息进行大量观察与分析，总结出模板与属性的定义规律，基于模式匹配提取概念属性，其结果覆盖了90\%以上的维基词条，为今后对信息框属性的进一步分析打下了良好的基础。
+然而百科数据的杂乱性，使得概念属性生成工作注定繁琐。本章通过对维基百科数据文件中的模板信息进行大量观察与分析，总结出模板与属性的定义规律，基于模式匹配提取概念属性，其结果覆盖了90\%以上的维基词条，为今后对信息框属性的进一步分析打下了良好的基础。
 
 本章主要对信息框属性进行研究，后文中提到的{\heiti 模板}，如无特别说明，统一指代{\heiti 信息框模板}。
 
@@ -27,9 +27,9 @@ Schema作为知识库骨架，在知识库构建过程中占有重要地位。�
 维基百科自2001年创立，经过15年左右的发展，不仅储备了海量数据，在编辑规则上也越发规范。但因为词条繁杂、参与人数众多，还是无法保证数据统一，使得从中抽取概念属性的工作困难重重。具体来说，主要包括模板获取过程中的模板结构差异问题，以及属性获取过程中的显示标签与模板标签不一致问题。
 
 {\heiti 模板获取问题：}
-模板在百科中是如何定义的呢？模板在维基百科中也设计成一个词条，在维基数据文件中，含有对模板词条的具体定义及其使用说明。模板词条标签以\textit{Template:}开头，大部分的信息框模板标签则以\textit{Template:Infobox}开头，但也有例外，在中文维基中，类似\textit{Template:电影信息框}等具有语言本地化特色的标签有很多。由此可见，单纯通过词条标签来筛选出信息框模板并不是一个良策。
+模板在维基百科中也设计成一个词条，在维基数据文件中，含有对模板词条的具体定义及其使用说明。模板词条标签以\textit{Template:}开头，大部分的信息框模板标签则以\textit{Template:Infobox}开头，但也有例外，在中文维基中，类似\textit{Template:电影信息框}等具有语言本地化特色的标签有很多。由此可见，单纯通过词条标签来筛选出信息框模板并不是一个良策。
 
-通过对模板内容进行总结，我们发现信息框模板的源代码中都含有\textit{infobox}字样，该infobox 所涵盖的区域中，包含模板属性定义，可以认为带有infobox信息的Template 为信息框模板。
+通过对模板内容进行总结，我们发现信息框模板的源代码中都含有\textit{infobox}字样为首的定义区域，该区域中包含模板属性定义，可以认为带有infobox信息的Template 为信息框模板。
 
 尽管区分出信息框模板，模板定义的内容格式却不尽相同。根据版式特点，我们将信息框模板归为三类，分别为键值对模板、表格模板与继承模板，图\ref{fig:template-examples}给出三种模板示例，我们将在\ref{sec:property-extraction}节中给出详细介绍。
 
@@ -48,7 +48,7 @@ Schema作为知识库骨架，在知识库构建过程中占有重要地位。�
         \caption{继承模板示例}
         \label{fig:template-inherit}
     \end{subfigure}
-    \vspace{0.01cm}
+    \vspace{0.08cm}
     \begin{subfigure}{9.6cm}
         \centering
         \fbox{\includegraphics[width=0.8\textwidth]{template-table}}
@@ -59,7 +59,7 @@ Schema作为知识库骨架，在知识库构建过程中占有重要地位。�
 \label{fig:template-examples}
 \end{figure}
 
-除了以上三类，数据文件中还出现了{\heiti 重定向模板}，内容如图\ref{fig:template-redirect}。该类模板的出现，是因为维基百科经过多次整理与更新，会将相似模板合并，或重新定义模板名称，被删除的模板会重定向到新模板上。2016年2月的中文维基上，\textit{Template:Infobox Film}与\textit{Template:Infobox film} 都重定向到\textit{Template: 电影信息框}。
+除了以上三类，数据文件中还出现了{\heiti 重定向模板}，内容如图\ref{fig:template-redirect}。该类模板的出现，是因为维基百科经过多次整理与更新，会将相似模板合并，或重新定义模板名称，被删除的模板会重定向到新模板上。2016年2月的中文维基上，\textit{Template:Infobox Film}与\textit{Template:Infobox film} 都重定向到\textit{Template:电影信息框}。
 
 \begin{figure}[ht]
   \centering
@@ -80,25 +80,33 @@ Schema作为知识库骨架，在知识库构建过程中占有重要地位。�
 
 \section{问题描述}
 
-{\heiti 属性定义：} 属性描述实例的特性。一个属性$p$应该具备特定的标签$label$，通过具体属性值$v$对特定实例进行描述。
+\begin{definition}
+{\heiti 概念：}
+概念是一类实例的共有类型。一个百科$W$包含一组概念集合$C$，一个特定的概念$c$，包含一组以$c$为类型的实例$I(c)$。
+\end{definition}
 
-{\heiti 概念定义：}
-概念是一类实例的共有类型，一个指定的概念$c \in C$所代表的领域下，会有一个属性集合$P(c)=\{p_{i}|i=1,2,...,n\}$ 表征$c$ 中的所有实例$I(c)$的特性，只用来描述领域内的实例$i_{c} \in I(c)$。不同概念下的相同标签属性，含义可能不同，即给定$c_i,c_j \in C$，$p_{c_i}.label == p_{c_j}.label\nRightarrow p_{c_i} == p_{c_j}$。
+\begin{definition}
+{\heiti 属性：} 属性描述实例的特性。一个属性$p$应该具备特定的标签$label$，通过具体属性值$v$对特定实例$i$进行描述。
+\end{definition}
 
-{\heiti 模板定义：} 
+一个指定的概念$c \in C$所代表的领域下，会有一个属性集合$P(c)=\{p_{i}|i=1,2,...,n\}$ 表征$c$ 中的所有实例$I(c)$的特性，$P(c)$同样形成属性模板，只用来描述领域内的实例$i(c) \in I(c)$。不同概念下的相同标签属性，含义可能不同，即给定$c_i,c_j \in C$，$p_{c_i}.label == p_{c_j}.label\nRightarrow p_{c_i} == p_{c_j}$。
+
 给定一个维基百科$W$，可以得到一系列模板$T$，模板中定义了描述一类词条的属性集合，对于模板$t \in T$，我们有$P(t)=\{p_{i}|i=1,2,...,m\}$。
-因为模板是对一类相同类型词条的编辑规定，可以认为，模板对应着唯一概念，则有$T \approx C$。基于\ref{sec:template-analysis}中对模板与属性的分析，我们对概念属性的定义需要进行如下补充说明：
+因为模板是对一类相同类型词条的编辑规定，可以认为，模板对应着唯一概念，则有$T \approx C$。基于\ref{sec:template-analysis}节中对模板与属性的分析，我们对概念属性的定义需要进行如下补充说明：
 \begin{itemize}
-\item 维基百科在数据文件中使用的属性标签，与现实在页面的不一致(图\ref{fig:film-tl-rl})。我们将数据文件中使用的标签定义为模板标签(template label)，用$tl$表示，展示在页面上的称为显示标签(render label)，用$rl$表示。则有$p.label = <tl, rl>$。
+\item 维基百科在数据文件中使用的属性标签，与展现在页面的不一致(图\ref{fig:film-tl-rl})。我们将数据文件中使用的标签定义为模板标签(template label)，用$tl$表示，展示在页面上的称为显示标签(render label)，用$rl$表示。则有$p.label = \left< tl, rl \right>$。
 \item 维基百科的模板可能有相近或重复，此时所代表的概念是存在包含关系的。因此严格来说，有$c = \{t_i|i=1,2...k\}$。
 \end{itemize}
 
-从维基百科中生成概念属性，即给定一个维基百科$W = <T>$，生成概念集合$C$，其中$c = \{t_i|i=1,2...k\}, c \in C, t_i \in T$，以及概念属性集合$\mathbb{P} = \{P(c_j)| j = 1,2,...,n\}$，其中对于$p_{c_j} \in P_{c_j}$，有$p_{c_j} = <c_j, tl, rl>$。
+\begin{definition}
+{\heiti 问题：} 
+从维基百科中生成概念属性，即给定一个维基百科$W = \left< T \right>$，生成概念集合$C$，其中$c = \{t_i|i=1,2...k\}, c \in C, t_i \in T$，以及概念属性集合$\mathbb{P} = \{P(c_j)| j = 1,2,...,n\}$，其中对于$p_{c_j} \in P_{c_j}$，有$p_{c_j} = \left< tl, rl \right>$。
+\end{definition}
 
 \section{概念属性生成}
 \label{sec:property-extraction}
 
-我们对三类信息框模板分别进行抽取，收集模板标签与显示标签的关系。我们发现，一个属性的显示标签，可能对应多个模板标签。比如“公司”概念下的总部地址，在模板标签为\textit{location,location\_city,location\_country}时，其显示标签同为\textit{总部地址}。抽取过程中，所有模板标签与显示标签的关系都会保留下来，我们以$<T, tl, rl>$ 的格式保留一组属性记录。
+我们对三类信息框模板分别进行抽取，收集模板标签与显示标签的关系。我们发现，一个属性的显示标签，可能对应多个模板标签。比如\textit{公司}概念下的\textit{总部地址}，在模板标签为\textit{location,location\_city,location\_country}时，其显示标签同为\textit{总部地址}。抽取过程中，所有模板标签与显示标签的关系都会保留下来，我们以$\left< T, tl, rl \right>$ 的格式保留一组属性记录。
 
 {\heiti 键值对模板($T_{kv}$)(图\ref{fig:template-keyvalue})：} 这种类型的模板，其显示标签与模板标签在infobox中以
 
@@ -111,17 +119,17 @@ Schema作为知识库骨架，在知识库构建过程中占有重要地位。�
 
 具体到标签抽取，维基定义通过\{\{\{\}\}\}表示变量，并经由嵌套表示多个并列变量。
 一个模板中，显示标签与模板标签的关系可能是一对一、一对多，即属性即使模板标签不同，可能会显示相同的标签在页面上。
-以图\ref{fig:template-keyvalue}中\textit{剧本}为例，label8与data8为一组，我们通过分析三层模板标签的嵌套，分别获取到\textit{tl=screenplay,劇本,剧本}三个模板标签，其中显示标签唯一，\textit{rl=剧本}，就此抽取出<Template:电影信息框,screenplay,剧本>、<Template:电影信息框,劇本,剧本>、<Template:电影信息框,剧本,剧本>三个属性记录。
+以图\ref{fig:template-keyvalue}中\textit{剧本}为例，label8与data8为一组，我们通过分析\{\{\{\}\}\}中嵌套的模板标签，分别获取到\textit{tl=screenplay,劇本,剧本}三个模板标签，其中显示标签唯一，\textit{rl=剧本}，就此抽取出<Template:电影信息框,screenplay,剧本>、<Template:电影信息框,劇本,剧本>、<Template:电影信息框,剧本,剧本>三个属性记录。
 
 {\heiti 表格模板($T_{table}$)(图\ref{fig:template-table})：}这种类型的模板以类似表格的形式对属性进行编排，抽取方法与键值对模板不同，根据表格行列思想，通过分析$\langle th\rangle、\langle td\rangle$等标签抽取。
 
-维基百科设计了自己的条件语句，\{\{\#if\}\}设立了条件，竖线后跟条件成立后的显示标签。图\ref{fig:template-table}中表示，如果编辑者有为\textit{country}填写属性值，则这个属性以\textit{开发国家}的标签形式显示在信息框中。
+维基百科设计了自己的条件语句，\{\{\#if\}\}设立条件，竖线后跟条件成立后的显示标签。图\ref{fig:template-table}中表示，如果编辑者有为\textit{country}填写属性值，则这个属性以\textit{开发国家}的标签形式显示在信息框中。
 
 维基模板中不仅仅定义了属性规则，在属性的显示样式上也有自己的一套定义，比如三引号代表加粗，style中定义了css样式等等。在抽取过程中，这些装饰都需要被清理掉。此外，繁简体转换也需要注意。
 
-{\heiti 继承模板($T_{inherit}$)(图\ref{fig:template-inherit})：}有半数左右的模板存在继承关系，即其模板标签的表示含义与父类模板相同，标签对应关系要结合父类模板来挖掘。继承模板可能继承自键值对模板、表格模板，甚至重定向模板。图\ref{fig:template-inherit}中，\textit{模板$t' = 德国城市$}继承了\textit{$t = Infobox Settlement$}，以属性\textit{海拔}$p$为例，$p(t).tl = elevation\_m$，$p(t).rl$为\textit{海拔}，$p(t')$继承于$p(t)$，$p(t').tl$有两个，分别为\textit{海拔高度，Höhe}，通过$elevation\_m$，我们可以追寻到$p(t').rl = 海拔$为显示标签，。
+{\heiti 继承模板($T_{inherit}$)(图\ref{fig:template-inherit})：}有半数左右的模板存在继承关系，即其模板标签的表示含义与父类模板相同，标签对应关系要结合父类模板来挖掘。继承模板可能继承自键值对模板、表格模板，甚至重定向模板。图\ref{fig:template-inherit}中，\textit{模板$t'$=德国城市}继承了\textit{$t = Infobox \ Settlement$}，以属性\textit{海拔}$p$为例，$p(t).tl = elevation\_m$，$p(t).rl$为\textit{海拔}，$p(t')$继承于$p(t)$，$p(t').tl$有两个，分别为\textit{海拔高度}和{Höhe}，通过$elevation\_m$，我们可以追寻到\textit{$p(t').rl$=海拔}为显示标签，。
 
-{\heiti 重定向模板($T_{redirect}$)(图\ref{fig:template-redirect})：} 这类模板虽然没有实质内容，也不建议继续使用，但其重定向关系对于分析实例对模板的应用情况至关重要，编辑者可能在编写信息框时用的旧版模板标签。图\ref{fig:template-redirect-examples}给出不同词条对同一模板的不同编辑方式。三个不同的电影词条分别可能用到\textit{Template:Infobox Film}，\textit{Template:Infobox film}，\textit{Template:电影信息框}。如果不考虑重定向模板标签，用前三类的抽取结果直接匹配，会大大影响已抽取模板对词条的覆盖率。因此重定向模板不能弃之不理。
+{\heiti 重定向模板($T_{redirect}$)(图\ref{fig:template-redirect})：} 这类模板虽然没有实质内容，也不建议继续使用，但其重定向关系对于分析实例对模板的应用情况至关重要，编辑者可能在编写信息框时用的旧版模板标签。图\ref{fig:template-redirect-examples}给出不同词条对同一模板的不同编辑方式。三个不同的电影词条分别可能用到\textit{Template:Infobox Film}，\textit{Template:Infobox film}，\textit{Template:电影信息框}。如果不考虑重定向模板标签，用前三类的抽取结果直接匹配，我们就无法找到前两个词条的模板，会大大影响已抽取模板对词条的覆盖率。因此重定向模板不能弃之不理。
 
 
 \begin{figure}[ht]
@@ -131,9 +139,9 @@ Schema作为知识库骨架，在知识库构建过程中占有重要地位。�
   \label{fig:template-redirect-examples}
 \end{figure}
 
-\subsection{结果统计}
+\section{结果统计}
 
-基于以上四类信息框模板，我们对2016.03版本的英文维基与2016.02 版本的中文维基分别抽取，表\ref{tab:wiki-infobox-statistic}是给出了两中语言维基的统计信息。
+基于以上四类信息框模板，我们对2016.03版本的英文维基与2016.02 版本的中文维基分别抽取，表\ref{tab:wiki-infobox-statistic}给出了两种维基百科的统计信息。
 
 \begin{table}[htb]
     \centering
@@ -163,9 +171,9 @@ Schema作为知识库骨架，在知识库构建过程中占有重要地位。�
   \end{tabular}
 \end{table}
 
-在抽取过程中，我们统计出以\textit{Template:Infobox} 标识的模板占所有英文信息框模板的91\%，中文的63.5\%。可见仅仅通过模板词条来确定信息框模板是不可行的，我们对模板更为精细的解析方法更有助于全面获取概念属性信息。
+在抽取过程中，我们统计出以\textit{Template:Infobox} 标识的模板占所有英文信息框模板的91\%，中文的63.5\%。可见仅仅通过模板词条名称来确定信息框模板是不可行的，我们对模板更为精细的解析方法更有助于全面获取概念属性信息。
 
-因为数据杂乱等原因，解析过程中无法成功获取所有模板中的信息，我们以常用模板为优先，并以词条覆盖率90\%以上为目标结束概念属性生成任务。成功解析的属性信息如表\ref{tab:render-label}所示，其中不包括对重定向模板。
+因为数据杂乱等原因，解析过程中无法成功获取所有模板中的信息，我们以常用模板为优先，并以词条覆盖率90\%以上为目标结束概念属性生成任务。成功解析的属性信息如表\ref{tab:render-label}所示，第一列为概念(模板)数量，第二列为获得的概念属性数量，第三列表示平均每个概念下的属性数量，第四列表示平均每个属性对应的模板标签数量。该数据统计不考虑重定向模板。
 
 \begin{table}[htb]
   \centering
@@ -173,31 +181,31 @@ Schema作为知识库骨架，在知识库构建过程中占有重要地位。�
   \label{tab:render-label}
     \begin{tabular}{ccccc}
     \toprule[1.5pt]
-      {\heiti 维基百科} & {\heiti $|C|$} & {\heiti $|\mathbb{P}|$} & {\heiti $|\mathbb{P}|/|C|$}  &{\heiti $|\mathbb{P}.tl|/|\mathbb{P}|$} \\\midrule[1pt]
+      {\heiti 维基百科} & {\heiti 概念} & {\heiti 概念属性} & {\heiti 属性/概念}  &{\heiti 模板标签/属性} \\\midrule[1pt]
       英文维基 & 3819 & 104741 & 27.45 & 1.27  \\
       中文维基 & 1895 & 44797  & 23.64 & 1.34  \\
     \bottomrule[1.5pt]
     \end{tabular}
 \end{table}
 
-我们在\ref{tab:coverage}中给出当前生成的概念属性对维基百科的覆盖程度。实际使用的模板名称与模板正式名称的匹配率较低，需要经过一系列转化，包括：大小写转换、去除多余空格、重定向模板转换等。
-模板覆盖率为抽取出的模板数量与所有词条使用的全部模板数量的占比，模板属性覆盖率为所有抽取出的模板属性对所有词条的所有属性数量的占比，词条覆盖率为能用抽取模板分析的词条的百分比，我们获取的概念属性可以处理90\%以上的维基词条的信息框。
+我们在表\ref{tab:coverage}中给出当前生成的概念属性对维基百科的覆盖程度。实际使用的模板名称与模板正式名称的匹配率较低，需要经过一系列转化，包括：大小写转换、去除多余空格、重定向模板转换等。
+模板覆盖率为抽取出的模板数量与所有词条使用的全部模板数量的占比，模板属性覆盖率为所有抽取出的模板属性对全部词条的所有属性数量的覆盖，词条覆盖率为使用已抽取模板的词条占全部词条的百分比，我们获取的概念属性可以处理90\%以上的维基词条的信息框。另外我们随机选取500个样例进行准确率评测。
 
 \begin{table}[htb]
   \centering
-  \caption{结果覆盖率统计}
+  \caption{结果覆盖率与准确率统计}
   \label{tab:coverage}
-    \begin{tabular}{cccc}
+    \begin{tabular}{ccccc}
       \toprule[1.5pt]
-      {\heiti 维基百科} & {\heiti 模板覆盖率} & {\heiti 模板属性覆盖率} & {\heiti 词条覆盖率} \\\midrule[1pt]
-      英文维基 & 87.6\% & 58.3\% & 96.7\%  \\
-      中文维基 & 77.8\% & 51.1\% & 90.3\%  \\
+      {\heiti 维基百科} & {\heiti 模板覆盖率} & {\heiti 模板属性覆盖率} & {\heiti 词条覆盖率} & {\heiti 准确率}\\\midrule[1pt]
+      英文维基 & 87.6\% & 58.3\% & 96.7\% & 86.0\% \\
+      中文维基 & 77.8\% & 51.1\% & 90.3\% & 87.5\% \\
       \bottomrule[1.5pt]
     \end{tabular}
 \end{table}
 
 表\ref{tab:template-examples}与表\ref{tab:template-property-examples}给出了概念生成结果举例，其中
-表\ref{tab:template-examples}给出了常用模板举例，表\ref{tab:template-property-examples}给出了三个常用中文模板的部分属性举例。
+表\ref{tab:template-examples}给出了常用模板举例，表\ref{tab:template-property-examples}给出了三个常用中文模板的属性举例。
 
 \begin{table}[htb]%建议把模版名中的infobox删掉
   \centering
@@ -207,16 +215,16 @@ Schema作为知识库骨架，在知识库构建过程中占有重要地位。�
     \toprule[1.5pt]
     \multicolumn{2}{c}{\heiti 英文维基}   & \multicolumn{2}{c}{\heiti 中文维基} \\
        模版名称&使用词条&模版名称&使用词条 \\\midrule[1pt]
-       Infobox settlement   & 253276 & Infobox Settlement & 34717 \\
-       Infobox person       & 158481 & 艺人 & 14047 \\
-       Infobox football biography & 127402 & Infobox Planet& 12163 \\
-       Infobox film         & 102863 & 文物保护单位& 10362 \\
-       Infobox officeholder & 86698 & Infobox officeholder& 7501\\
-       Infobox album        & 77436 & Infobox French commune& 7297\\
-       Infobox musical artist & 74469 & 电影信息框& 6787 \\
-       Infobox company      & 46646 & Infobox person& 6414 \\
-%       Infobox NRHP         & 42385 & 电视节目信息框& 5958\\
-%       Infobox single       & 40578 & Infobox Company& 5138 \\
+       Infobox settlement   & 253,276 & Infobox Settlement & 34,717 \\
+       Infobox person       & 158,481 & 艺人 & 14,047 \\
+       Infobox football biography & 127,402 & Infobox Planet& 12,163 \\
+       Infobox film         & 102,863 & 文物保护单位& 10,362 \\
+       Infobox officeholder & 86,698 & Infobox officeholder& 7,501\\
+       Infobox album        & 77,436 & Infobox French commune& 7,297\\
+       Infobox musical artist & 74,469 & 电影信息框& 6,787 \\
+       Infobox company      & 46,646 & Infobox person& 6,414 \\
+       Infobox NRHP         & 42385 & 电视节目信息框& 5958\\
+       Infobox single       & 40578 & Infobox Company& 5138 \\
     \bottomrule[1.5pt]
     \end{tabular}
 \end{table}
@@ -247,5 +255,5 @@ Schema作为知识库骨架，在知识库构建过程中占有重要地位。�
 
 本章主要从维基百科中生成概念属性。我们将维基模板相关的领域视为概念，其中的属性视为该概念下的属性，这种方法同时可以解决属性多义问题，即认为同一领域下的属性没有歧义性。
 
-为了获得尽可能多的概念属性，我们对维基百科模板和属性进行了细致的分析，将模板分为键值对模板、表格模板、继承模板与重定向模板，分别进行处理，将属性赋予模板标签与显示标签两种信息，这些工作，有助于他人对于属性和模板有更深入的理解。
+为了获得尽可能多的概念属性，我们对维基百科模板和属性进行了细致的分析，将模板分为键值对模板、表格模板、继承模板与重定向模板，分别进行处理，将属性赋予模板标签与显示标签两种信息。这些工作，有助于他人对于属性和模板有更深入的理解。
 
